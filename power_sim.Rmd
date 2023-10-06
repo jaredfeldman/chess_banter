@@ -1,0 +1,107 @@
+```{r package loads, warning=FALSE, message=FALSE}
+library(data.table)
+library(sandwich)
+library(lmtest)
+
+library(ggplot2)
+library(knitr)
+library(lemon)
+
+```
+
+```{r}
+
+# create a fake accuracies data table where...
+fake_accuracies <- data.table(
+  # we have 100 observations
+  id  = 1:500, 
+  # assign treatment or control
+  D   = sample(0:1, 500, replace = TRUE),
+  # create accuracy with the mean of 0.65 with sd of 0.1
+  accuracy = rnorm(n=500, mean = .65, sd = 0.1),
+  # estimate small treatment effect of 0.05 with sd of 0.04, so some values will
+  # lead to lower accuracy, some will lead to higher
+  tau = rnorm(n = 500, mean = .03, sd = .02)
+)
+```
+
+```{r}
+fake_accuracies[ , Y := ifelse(D == 1, accuracy + tau, accuracy)]
+```
+
+```{r}
+# take initial p value by running regression just on control
+t_test <- fake_accuracies[ , t.test(Y ~ D)]
+t_test[3]
+```
+
+```{r}
+# create a function that can simulate with any number of samples
+# arguments:
+## d: datatable to sample from
+## num_samples: number of samples from each group
+sample_from_d_t_test <- function(d, num_samples){
+  
+    # sample rows from the d datatable based on uniform_price_auction
+    # with replacement = true
+    sample_table <- d[d[ , .I[sample(.N, num_samples, replace = TRUE)] , by = D]$V1]
+    
+    # conduct a t test on bid by uniform_price_auction
+    t_test <- sample_table[ , t.test(Y ~ D)]
+    return(t_test)
+}
+
+# check for 10 people to ensure function works
+t_test_ten_people <- sample_from_d_t_test(d = fake_accuracies, num_samples = 5)
+t_test_ten_people[3]
+```
+```{r, include=TRUE} 
+# define a sequence of percentages to use for multiple power
+# calculations, from 10% to 300%, in 25% increments.
+percentages_to_sample <- seq(0.1, 2, by = 0.05)
+
+# create an empty data table that we'll use to store the number
+# of samples (based on the percentage in that iteration)
+# and the corresponding power
+power_results <- data.table(num_samples = numeric(0), power = numeric(0))
+
+# for each percentage in the percentages_to_sample sequence
+for (percentage in percentages_to_sample) {
+  # round down the number of samples based on the percentage to avoid decimals
+  num_samples_ <- floor((nrow(fake_accuracies) / 2) * percentage)
+  # create an empty vector to store p values
+  t_test_p_values_ <- rep(NA, 1000)
+  
+  # for each simulation in 1000 simulations
+  for (sim in 1:1000) {
+    # simulate a t-test with the specified number of samples 
+    # using the function from above
+    # and store the p-value in sim_p
+    sim_p <- sample_from_d_t_test(d = fake_accuracies, num_samples = num_samples_)[3]
+    
+    # add sim_p to t_test_p_values_
+    t_test_p_values_[sim] <- sim_p[[1]]
+  }
+  
+  # calculate power and append to the results
+  # using all of the p values from the loop above
+  power_ <- mean(t_test_p_values_ <= 0.05)
+  
+  # create a table that stores number of samples
+  # and associated power for plotting purposes
+  power_results <- rbindlist(list(power_results, data.table(num_samples = num_samples_, power = power_)))
+}
+
+# plot the results of the loops above
+ggplot(power_results, aes(x = num_samples, y = power)) + 
+  geom_point() +
+  labs(x = "# of Samples per Group", y = "Power") +
+  ggtitle("Power vs. # of Samples per Group") +
+  scale_x_continuous(breaks = seq(0, 500, by = 25)) +
+  scale_y_continuous(breaks = seq(0, 1, by=.1)) +
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red") # Add a horizontal line at y = 0.8
+```
+
+
+
+
