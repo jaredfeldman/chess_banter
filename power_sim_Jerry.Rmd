@@ -1,0 +1,88 @@
+```{r package loads, warning=FALSE, message=FALSE}
+library(data.table)
+library(sandwich)
+library(lmtest)
+
+library(ggplot2)
+library(knitr)
+library(lemon)
+
+```
+
+```{r, include=TRUE}
+# Setting a seed for reproducibility
+set.seed(123)
+```
+
+```{r, include=TRUE}
+# Defining parameters
+# significance level
+alpha <- 0.05
+# number of simulations
+number_sims <- 1000
+# Sample sizes to test
+sample_sizes <- c(500, 1000, 10000)
+# effect sizes
+effect_sizes <- c(0.2, 0.5, 0.8)
+
+# 65% mean accuracy
+accuracy_mean <- 0.65
+# 10% standard deviation for accuracy
+accuracy_sd <- 0.10
+# 3% mean for tau
+tau_mean <- 0.03
+# 2% standard deviation for tau
+tau_sd <- 0.02
+```
+
+```{r, include=TRUE}
+# make an empty table
+results_d <- data.table(Sample_Size = numeric(),
+                         Accuracy = numeric(),
+                         Tau = numeric(),
+                         Power = numeric())
+results_d
+```
+
+```{r, include=TRUE}
+for (n in sample_sizes) {
+  for (i in 1:number_sims) {
+    # Generate data control and treatment
+    control <- rnorm(n, mean = 0, sd = 1)
+    treatment <- rnorm(n, mean = tau_mean, sd = 1)
+    
+    # adding some noise
+    treatment <- treatment + rnorm(n, mean = 0, sd = tau_sd)
+    
+    # t-test
+    t_test_result <- t.test(control, treatment, alternative = "two.sided", var.equal = FALSE)
+    
+    
+    # Calculate power
+    power <- power.t.test(n = n, delta = tau_mean, sd = 1, sig.level = alpha, type = "two.sample", alternative = "two.sided")$power
+    
+    # Add results to the data table
+    results_d <- rbind(results_d, data.table(Sample_Size = n, Accuracy = mean(abs(treatment-control) < accuracy_mean), Tau = mean(abs(treatment-control) / abs(control)) , Power = power))
+  }
+}
+```
+
+```{r, include=TRUE}
+# Printing the data table
+print(results_d)
+```
+
+```{r, include=TRUE}
+ggplot(results_d, aes(x = Sample_Size, y = Power)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red") +
+  labs(x = "Sample Size", y = "Power") +
+  ggtitle("Power vs. Sample Size")
+
+```
+
+
+
+
+
