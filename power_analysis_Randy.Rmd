@@ -1,0 +1,107 @@
+```{r package loads, warning=FALSE, message=FALSE}
+library(data.table)
+library(sandwich)
+library(lmtest)
+library(ggplot2)
+library(knitr)
+library(tidyverse)
+```
+
+```{r}
+simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves){
+    
+    d <- data.table(
+      n = 1:recruits
+    )
+    
+    half_recruits <- floor(recruits/2)
+    
+    ## no treatment data 
+    d_1 <- data.table(
+      id    = 1:half_recruits, 
+      treat = 0
+    )
+        ## assign num bad moves to treatment group
+    d_1[ , Bad_moves := rnorm(.N, mean=mean_bad_moves, sd=sd_bad_moves)]
+    
+    ## treatment data 
+    d_2 <- data.table(
+      id    = (half_recruits+1):recruits, 
+      treat = 1
+    )
+        ## assign num bad moves to treatment group
+    d_2[ , Bad_moves := rnorm(.N, mean=mean_bad_moves*(1+effect_size), sd=sd_bad_moves)]
+    
+    ## Stack data frames 
+    d <- rbind(d_1, d_2)
+    
+    model_1    <- lm(Bad_moves ~ treat, data = d)
+    anova_m1 <- anova(model_1)
+    
+    return(anova_m1$`Pr(>F)`)
+    
+    }
+
+model_1 <- simulate_regression(500, 20, .1, 5)
+## Look at size of standard errors in this difference in difference: 
+# summary(model_1)
+# anova_m1 <- anova(model_1)
+# stargazer::stargazer(
+#   model_1,
+#   type = 'text'
+# )
+
+
+```
+```{r}
+# function(recruits, mean_bad_moves, effect_size , sd_bad_moves)
+p_vals <- replicate(2000, simulate_regression(500, 30, .05, 10))
+p_vals <- as.data.frame(p_vals)
+p_vals <- p_vals[1,]
+p_vals <- t(p_vals)
+rownames(p_vals)<-NULL
+colnames(p_vals)[1] ="p"
+p_vals <- data.frame(p_vals)
+```
+
+```{r}
+# hist(p_vals, xlim = c(0,1))
+
+under_0.05 <- mean(p_vals < 0.05)
+
+ggplot(data = p_vals, aes(x=p)) + 
+  geom_density() +
+  xlim(0,1) + 
+  annotate("text", x = 0.75, y = 1, , color = "red", label = paste("Power: ", paste(under_0.05*100, "%",sep=""), sep="")) +
+  geom_vline(xintercept = 0.05, color = "red", linetype="dashed") +
+  ggtitle("Density of P-values")
+
+```
+
+```{r, include = TRUE}
+# simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves)
+
+steps <- seq(1, 10, by=.25)
+power_list <- data.frame()
+
+for (step in steps){
+  p_vals <- replicate(200, simulate_regression(500, 20, .05, step))
+  power <- length(p_vals[p_vals < 0.05])/length(p_vals)
+  power_list <- rbind(power_list, power)
+}
+
+b <- bind_cols(power_list, steps)
+colnames(b) <- c("y", "x")
+ggplot(b,aes(x=x, y=y)) + 
+  geom_line() + 
+  ylim(0,1) + 
+  xlab("SD of bad moves") + 
+  ylab("Power") + 
+  geom_hline(yintercept = 0.8, color = "red", linetype="dashed") +
+  ggtitle("SD vs Power, mean bad moves = 20, effect size = 5%")
+
+
+print(b)
+
+```
+
