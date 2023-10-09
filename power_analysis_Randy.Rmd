@@ -9,7 +9,6 @@ library(tidyverse)
 
 ```{r}
 simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves){
-    
     d <- data.table(
       n = 1:recruits
     )
@@ -21,7 +20,8 @@ simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_mo
       id    = 1:half_recruits, 
       treat = 0
     )
-        ## assign num bad moves to treatment group
+    
+    ## assign num bad moves to treatment group
     d_1[ , Bad_moves := rnorm(.N, mean=mean_bad_moves, sd=sd_bad_moves)]
     
     ## treatment data 
@@ -29,7 +29,8 @@ simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_mo
       id    = (half_recruits+1):recruits, 
       treat = 1
     )
-        ## assign num bad moves to treatment group
+    
+    ## assign num bad moves to treatment group
     d_2[ , Bad_moves := rnorm(.N, mean=mean_bad_moves*(1+effect_size), sd=sd_bad_moves)]
     
     ## Stack data frames 
@@ -39,7 +40,6 @@ simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_mo
     anova_m1 <- anova(model_1)
     
     return(anova_m1$`Pr(>F)`)
-    
     }
 
 model_1 <- simulate_regression(500, 20, .1, 5)
@@ -55,17 +55,13 @@ model_1 <- simulate_regression(500, 20, .1, 5)
 ```
 ```{r}
 # function(recruits, mean_bad_moves, effect_size , sd_bad_moves)
-p_vals <- replicate(2000, simulate_regression(500, 30, .05, 10))
+p_vals <- replicate(2000, simulate_regression(500, 5, .1, 0.5))
 p_vals <- as.data.frame(p_vals)
 p_vals <- p_vals[1,]
 p_vals <- t(p_vals)
 rownames(p_vals)<-NULL
 colnames(p_vals)[1] ="p"
 p_vals <- data.frame(p_vals)
-```
-
-```{r}
-# hist(p_vals, xlim = c(0,1))
 
 under_0.05 <- mean(p_vals < 0.05)
 
@@ -78,7 +74,9 @@ ggplot(data = p_vals, aes(x=p)) +
 
 ```
 
+
 ```{r, include = TRUE}
+# Simulate Standard Deviation
 # simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves)
 
 steps <- seq(1, 10, by=.25)
@@ -98,10 +96,71 @@ ggplot(b,aes(x=x, y=y)) +
   xlab("SD of bad moves") + 
   ylab("Power") + 
   geom_hline(yintercept = 0.8, color = "red", linetype="dashed") +
-  ggtitle("SD vs Power, mean bad moves = 20, effect size = 5%")
+  ggtitle("SD vs Power, mean bad moves = 5, effect size = 5%")
 
 
 print(b)
 
 ```
+```{r, include = TRUE}
+# Simulate sample size
+# simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves)
+
+steps <- seq(10, 500, by=20)
+power_list1 <- data.frame()
+power_list2 <- data.frame()
+power_list3 <- data.frame()
+
+for (step in steps){
+  p_vals <- replicate(250, simulate_regression(step, 70, .05, 10))
+  power <- length(p_vals[p_vals < 0.05])/length(p_vals)
+  power_list1 <- rbind(power_list1, power)
+  print(step)
+}
+g1 <- bind_cols(power_list1, steps)
+colnames(g1) <- c("y", "x")
+
+
+for (step in steps){
+  p_vals <- replicate(250, simulate_regression(step, 70, .10, 10))
+  power <- length(p_vals[p_vals < 0.05])/length(p_vals)
+  power_list2 <- rbind(power_list2, power)
+  print(step)
+}
+g2 <- bind_cols(power_list2, steps)
+colnames(g2) <- c("y", "x")
+
+for (step in steps){
+  p_vals <- replicate(250, simulate_regression(step, 70, .15, 10))
+  power <- length(p_vals[p_vals < 0.05])/length(p_vals)
+  power_list3 <- rbind(power_list3, power)
+  print(step)
+}
+g3 <- bind_cols(power_list3, steps)
+colnames(g3) <- c("y", "x")
+
+ggplot() + 
+  geom_line(g1,aes(x=x, y=y), color = "lightblue") +
+  geom_line(g2,aes(x=x, y=y), color = "blue") +
+  geom_line(g3,aes(x=x, y=y), color ="purple") +
+  ylim(0,1) + 
+  xlab("Samples") + 
+  ylab("Power") + 
+  geom_hline(yintercept = 0.8, color = "red", linetype="dashed") +
+  ggtitle("Sample size vs Power")
+
+
+```
+```{r}
+ggplot() + 
+  geom_line(data = g1, aes(x=x, y=y), color = "green") + 
+  geom_line(data = g2, aes(x=x, y=y), color = "blue") + 
+  geom_line(data = g3, aes(x=x, y=y), color ="purple") + 
+  ylim(0,1) + 
+  xlab("Samples") +  
+  ylab("Power") + 
+  geom_hline(yintercept = 0.8, color = "red", linetype="dashed") +
+  ggtitle("Sample size vs Power")
+```
+
 
