@@ -26,10 +26,11 @@ library(knitr)
 library(tidyverse)
 ```
 ## Justification for simulation variables
-We performed a pilot test of 10 games with our chess bot that plays at a consistent 1000 level against real opponents on lichess.com.  We found that the opponents played at an average of 72% accuracy and had a 12.3 standard deviation in their accuracy rating.  We used these values in our power analysis.  
+We performed a pilot test of 10 games with our chess bot that plays at a consistent 1500 (average) level against real opponents on lichess.com.  We found that the opponents played at an average of 72% accuracy and had a 12.3 standard deviation in their accuracy rating.  We used these values in our power analysis.  
 
 We are using a conservative estimate of 5-15% effect size for our power analysis.  We found in the paper *Trash-talking: Competitive incivility motivates rivalry, performance, and unethical behavior* by Jeremy A. Yip, Maurice E. Schweitzer, and Samir Nurohamed.  https://www.sciencedirect.com/science/article/pii/S0749597816301157 
-On page 131, they found that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87.  They found that trash talking had an an indirect effect on competitive performance through creation of a perceived rivalry between the players.  They found that trash talking resulted in the opponent performing better.  
+
+They found that trash talking had an an indirect effect on competitive performance through creation of a perceived rivalry between the players. On page 131, they show that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87. Trash talking resulted in the opponent performing better.  
 
 ## Create simulation function using linear regression
 ```{r Function-for-simulation, include = TRUE}
