@@ -1,4 +1,23 @@
-```{r package loads, warning=FALSE, message=FALSE}
+---
+title: "Power Analysis"
+author: "Jared Feldman, Jerry Gonzalez, Reed Evans, Randy Louie"
+date: "10/10/2023"
+output:
+  pdf_document:
+    toc: yes
+  bookdown::pdf_document2:
+    toc: yes
+    number_sections: yes
+subtitle: Datasci 241
+fig.caption: yes
+keep_tex: yes
+header-includes: \usepackage{float}
+---
+
+\newpage
+\setcounter{page}{1}
+
+```{r package loads, warning=FALSE, message=FALSE, include=FALSE}
 library(data.table)
 library(sandwich)
 library(lmtest)
@@ -6,8 +25,14 @@ library(ggplot2)
 library(knitr)
 library(tidyverse)
 ```
+## Justification for simulation variables
+We performed a pilot test of 10 games with our chess bot that plays at a consistent 1000 level against real opponents on lichess.com.  We found that the opponents played at an average of 72% accuracy and had a 12.3 standard deviation in their accuracy rating.  We used these values in our power analysis.  
 
-```{r, include = TRUE}
+We are using a conservative estimate of 5-15% effect size for our power analysis.  We found in the paper *Trash-talking: Competitive incivility motivates rivalry, performance, and unethical behavior* by Jeremy A. Yip, Maurice E. Schweitzer, and Samir Nurohamed.  https://www.sciencedirect.com/science/article/pii/S0749597816301157 
+On page 131, they found that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87.  They found that trash talking had an an indirect effect on competitive performance through creation of a perceived rivalry between the players.  They found that trash talking resulted in the opponent performing better.  
+
+## Create simulation function using linear regression
+```{r Function-for-simulation, include = TRUE}
 simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves){
     d <- data.table(
       n = 1:recruits)
@@ -41,37 +66,30 @@ simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_mo
 
 ```
 
-## Justification for simulation variables
-We performed a pilot test of 10 games with our chess bot that plays at a consistent 1000 level against real opponents on lichess.com.  We found that the opponents played at an average of 72% accuracy and had a 12.3 standard deviation in their accuracy rating.  We used these values in our power analysis.  
-
-
-
-```{r, include = TRUE, message=FALSE}
-# Simulate sample size
-
-
+## Simulate
+```{r Simulate, include = TRUE, message=FALSE}
 # Sample sizes to simulate
-steps <- seq(0, 500, by=25)
+steps <- seq(0, 400, by=25)
 
 # Effect sizes to simulate
-effects <- c(.04, .05, .10, .15, .3)
+effects <- c(.05, .075, .10, .15)
 
 # Create master data frame to aggregate the data into
 g_total <- data.frame()
 
-
 for (eff in effects){ #loop through effect sizes
   power_list <- data.frame()
   
+  # Print for status
   # print(paste(toString(eff*100),"%", sep = ""))
+  
   for (step in steps){ #loop through sample sizes 
     
     # simulate_regression <- function(recruits, mean_bad_moves, effect_size, sd_bad_moves)
-    p_vals <- replicate(250, simulate_regression(step, 72, eff, 12.3))  
+    p_vals <- replicate(250, simulate_regression(step, 69, eff, 13.7))
     
     power <- length(p_vals[p_vals < 0.05])/length(p_vals)
     power_list <- rbind(power_list, power)
-    # cat(paste(step," "))
   }
   g <- bind_cols(power_list, steps)
   colnames(g) <- c("y", "x")
@@ -84,11 +102,9 @@ for (eff in effects){ #loop through effect sizes
   g_total <- rbind(g_total, g)
 }
 ```
-
-```{r, include = TRUE}
-# Plot
-
-g_total$Effect_size <- factor(g_total$Effect_size, levels = c("2.5%", "5%", "10%", "15%", "30%"))
+## Plot
+```{r Plot, include = TRUE}
+g_total$Effect_size <- factor(g_total$Effect_size, levels = c("5%", "7.5%", "10%", "15%"))
 
 plot <- ggplot(data = g_total, aes(x=x, y=y, color = Effect_size)) + 
   geom_line() + 
@@ -97,8 +113,8 @@ plot <- ggplot(data = g_total, aes(x=x, y=y, color = Effect_size)) +
   scale_x_continuous(name="Samples", limits=c(0, 400), labels=c("0","50","100", "150","200","250","300","350", "400"), breaks=seq(0,400,50)) +
   ylab("Power") + 
   geom_hline(yintercept = 0.8, color = "red", linetype="dashed") +
-  ggtitle("Sample size vs Power, mean Accuracy = 72%, SD accuracy = 12.3") +
-  scale_color_manual(name="Effect Size", values =c("slategrey", "cyan", "royalblue", "purple",))
+  ggtitle("Sample size vs Power, mean Accuracy = 69%, SD accuracy = 13.8") +
+  scale_color_manual(name="Effect Size", values =c("slategrey", "cyan", "royalblue", "purple"))
 plot
 ```
 
