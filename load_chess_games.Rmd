@@ -1,0 +1,22 @@
+---
+title: "load_chess_games"
+output: html_document
+date: "2023-10-09"
+---
+
+
+```{r}
+# load libraries
+library(bigchess)
+library(data.table)
+```
+
+```{r}
+# read pgn file into chess_games
+chess_games <- read.pgn(
+  con = "lichess_KozQueen_2023-10-10.pgn"
+)
+
+# and turn it into a data.table
+chess_games <- data.table(chess_games)
+```
