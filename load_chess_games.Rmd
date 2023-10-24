@@ -37,6 +37,9 @@ fwrite(chess_games, pilot_file_path)
 
 # read in the new csv
 chess_games_pilot_acc <- fread("chess_games_pilot_acc.csv")
+
+# filter down to the variables we're interested in
+chess_games_pilot_acc <- chess_games_pilot_acc[ , c('opp_accuracy', 'treat')]
 ```
 
 ```{r}
