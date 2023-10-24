@@ -1,0 +1,79 @@
+---
+title: "Chess Banter Project Checkin"
+author: "Reed Evans, Jared Feldman, Jerry Gonzalez, Randy Louie"
+date: "10/24/2023"
+name: "Reed Evans, Jared Feldman, Jerry Gonzalez, Randy Louie"
+output: 
+  pdf_document:
+    number_sections: true
+---
+
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(include = FALSE, message = FALSE, warning = FALSE )
+
+knitr::knit_engines$set(problem_description = function(options) {
+  code <- paste(options$code, collapse = "\n")
+})
+```
+
+
+```{r}
+# load libraries
+library(data.table)
+library(stargazer)
+library(sandwich)
+library(lmtest)
+#library(knitr)
+library(kableExtra)
+library(dplyr)
+```
+# Treatment Design
+In addition to the treatment of banter that creates a “sense of rivalry” with the opponent we would like to explore the possibility of a placebo treatment if we have time.  If randomized into this group, the participant will see irrelevant chats from us.  This could be something like random fun animal facts like “Did you know giraffes can grow to 19 ft tall?”  This will allow us to further isolate what is causing the participants to play better or worse against us.  By having this placebo we will be answering the question of whether the cause of the treatment effect is the opponent reading the chats or the actual content of those chats.  
+
+# Experiment Design
+We were able to use Lichess.org’s game API to play ranked games against random opponents on the website without the opponent knowing we were using a program.  Since this API is python based, we are fully able to control the randomization, the playing skill level, and chats.  This will enable us to lower the active workload of our team.  
+
+For every game we win or lose during our experiment, the rating of our account will rise or lower accordingly.  This will mean that the player that we play next may be affected by whether we won the previous game.  If we have a win streak, the next player will be higher rated than if we had a losing streak.  We think that the randomization of our treatment and control should eliminate this bias.  
+
+Based on our power analysis, we would like to implement two points in which we look at our data.  We think 200 and 400 total played games are reasonable stopping points.
+
+# Measurement Design
+We are currently planning to use Lichess.org’s built in ‘Accuracy’ measurement as our analysis metric.  A 100% accuracy score means that the player played every move exactly how the Lichess engine would have played in that board scenario.  Although chess is not a completely ‘solved’ game i.e., a chess engine still has a chance to  be beaten by an elite human, it will be impossible for the population of players we will be playing to beat the chess engine.  So we can assume that the chess engine is a perfect player for our population.  The chess engine we will be using for our automated playing will make mistakes and try to replicate the skill of the average 1500 level player.  
+If after further progress we deem Lichess’s Accuracy algorithm to be flawed, we have the option of downloading every move during the game and running the moves through another chess game analysis tool to generate a different metric.  
+
+
+# Pilot Data 
+
+For pilot data, we have run the chess bot against a sample of 15 real lichess players around the 1500 range and captured the Lichess.org game analysis for these games. For the first 10 games, these were all untreated. The last 5 games, we treated the players to light, unscripted banter. 
+
+```{r, include=FALSE}
+# read in the new csv
+d <- fread("game_stats.csv")
+#treated most recent (first in dataset) 5 games... will update this with better coding in dataset that is pulled in
+d[1:5,treat:=1]
+d[6:15,treat:=0]
+# filter down to the variables we're interested in
+
+d <- d[,c("id","treat","status","winner","op_player","op_color","op_rating","op_ratingDiff","op_blunder","op_accuracy")]
+
+df <- tibble(d)
+```
+
+```{r, include=TRUE}
+kable(head(d, 10), booktabs = TRUE) %>%
+  kable_styling(font_size = 8)
+```
+
+
+```{r, include=TRUE}
+# run a regression and build stargazer
+
+pilot_test <- d[ , lm(op_accuracy ~ treat)]
+pilot_test_robust <- coefci(pilot_test, vcov. = vcovHC(pilot_test))
+
+stargazer(pilot_test,
+          pilot_test_robust,
+          type = 'text')
+```
+
+
