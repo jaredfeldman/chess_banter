@@ -7,7 +7,6 @@ date: "2023-10-09"
 
 ```{r}
 # load libraries
-library(bigchess)
 library(data.table)
 library(stargazer)
 library(sandwich)
@@ -15,37 +14,22 @@ library(lmtest)
 ```
 
 ```{r}
-# read pgn file into chess_games
-chess_games <- read.pgn(
-  con = "lichess_KozQueen_2023-10-10.pgn"
-)
-
-# and turn it into a data.table
-chess_games <- data.table(chess_games)
-```
-
-```{r}
-# export chess_games to csv for manual entry of accuracies
-
-pilot_file_path <- "chess_games_pilot.csv"
-fwrite(chess_games, pilot_file_path)
-```
-
-```{r}
-# EDIT THE .csv manually
-# and save as "chess_games_pilot_acc.csv"
 
 # read in the new csv
-chess_games_pilot_acc <- fread("chess_games_pilot_acc.csv")
+d <- fread("game_stats.csv")
+
+#treated most recent (first in dataset) 5 games... will update this with better coding in dataset that is pulled in
+d[1:5,treat:=1]
+d[6:15,treat:=0]
+
 
 # filter down to the variables we're interested in
-chess_games_pilot_acc <- chess_games_pilot_acc[ , c('opp_accuracy', 'treat')]
 ```
 
 ```{r}
 # run a regression and build stargazer
 
-pilot_test <- chess_games_pilot_acc[ , lm(opp_accuracy ~ treat)]
+pilot_test <- d[ , lm(opponent_accuracy ~ treat)]
 pilot_test_robust <- coefci(pilot_test, vcov. = vcovHC(pilot_test))
 
 stargazer(pilot_test,
