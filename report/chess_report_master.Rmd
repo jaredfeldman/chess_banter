@@ -1,0 +1,51 @@
+---
+title: "Chess Banter"
+author: "Reed Evans, Jared Feldman, Jerry Gonzalez, Randy Louie"
+date: \today
+output: 
+  pdf_document: 
+    number_sections: true
+#output: github_document
+---
+
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(include = FALSE, message = FALSE, warning = FALSE )
+
+knitr::knit_engines$set(problem_description = function(options) {
+  code <- paste(options$code, collapse = "\n")
+})
+```
+
+```{r load packages, warning=FALSE, message=FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(ggplot2)
+library(patchwork)
+
+library(foreign)
+
+library(knitr)
+library(tidyverse)
+inline_reference <- "r inline_reference"
+```
+
+
+
+\tableofcontents
+\newpage
+
+```{r, child='./abstract.Rmd'}
+```
+
+\newpage
+
+```{r, child='./introduction.Rmd'}
+```
+
+\newpage
+
+```{r, child='./power_analysis.Rmd'}
+```

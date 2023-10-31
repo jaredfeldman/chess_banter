@@ -1,0 +1,59 @@
+# Introduction
+
+## Theory
+Psychological pressure can have an impact on sporting excellence (Johnson and Taylor, 2018). One key mechanism through which individuals experience psychological pressure is by engaging in banter with their opponent. Banter, which is characterized as playful teasing and competitive remarks, has the potential to have both positive and negative influences on performance.  On the one hand, Banter can distract individuals from performing their best by diverting focus away from the game.  On the contrary, banter could lead to increased engagement and motivation, potentially resulting in one being in a heightened state which is commonly referred to as being “in the zone” (Murphy and White, 1995). In fact, according to a study by McDermott and Lachlan (McDermott and Lachlan, 2021), the targets of trash talk were motivated to outperform their opponents and frequently did outperform them.
+Concept Under Investigation
+There is limited research around the impact that banter, trash-talking, or even bullying may have on an opponent’s in-game performance. Trash-talking has been found to be more prevalent among men vs. women, as well as in contact sports vs. non-contact sports (Kniffin and Palacio 2018). However, studies have not found any differences between whether an athlete feels anonymous (e.g., masked) or not. Given we will be engaging in online gaming, we will further investigate the impact in non-contact sports and anonymity, as many experience the online disinhibition effect (Wikipedia) when engaging with other people online.
+
+Studies have found that online trash-talking has become normalized (Beres et al. 2021), even though it could have a negative impact on the recipient. We hope that our research will shed light on banter’s perceived impact on game play, and curb behaviors towards a less toxic online gaming environment.
+Treatment Variants 
+Regardless of the group our opponent may fall into, we will use a chess engine to determine our moves, keeping our skill level “average”, as determined by the chess engine, to maintain consistency.
+
+For those that are in the control group, we will refrain from any kind of chat during the match, even if our opponent engages us. For the treatment group, we will engage with our opponent every 3–4 moves, using our predefined “Banter Script.” This script will include phrases such as “Ouch!”, “Got your horsey!”, and “Looky looky I got rooky!” The intent of engaging with our opponents is to cause a change in difference in play compared to control. We will keep our engagement one-directional, strictly using phrases from our script in pre-defined intervals, and refrain from reacting or responding to any messages our opponent may send.
+Reason about Mechanisms
+Online forums show that online chess players become annoyed by conversations and may mute the chat when their opponent engages with them, arguing that people should “let the chess playing speak for itself.” At the more extreme levels, players may block and report players if they “say one wrong word” to them. Conversely, some players “don't mind the occasional banter and trash talk if it's in good fun.” (lichess 2020). Based strictly on opinions in these forums, however, it seems the majority of players fall in the former group compared to the latter. Because of this, we feel that players, at the very least, may become more engaged during a match, impacting their performance.
+
+Out of respect for our opponent, we will make our best attempt to keep our Banter Script cordial, and will refrain from any messages that may seem personal (e.g., all of our messages will be strictly relevant to chess moves.). Additionally, we will play opponents of similar skill (using the chess.com matching algorithm), and we will keep our skill level consistent using the chess engine. Having a consistent script of messages, keeping our play constant, and engaging in similar intervals will allow us to isolate our mechanism of engaging with our opponents.
+Rough Experiment Design
+Using chess.com’s skill based matchmaking system, we will be randomly matched with players that are around 1000 skill level set.  1000 is the mean skill level.    
+We will randomly assign participants to two equal groups: the “Treatment” group and the “Control” group. Immediately before the chess match begins, we will flip a coin to determine whether our opponent will receive treatment (heads) or control (tails). 
+ If randomly selected into the treatment group, during the game we use chess.com’s chat feature to talk to the other player.  We will use a predetermined script to ensure consistency so that the “banter” they receive is equal.
+The control group will play the chess game and we will refrain from using the chat function with them.
+We will use a chess engine to determine the moves that we make.  This ensures that our chess playing is consistent and at a 1000 level.
+Download opponent move classifications during treatment and control from chess.com history function
+Game Metrics 
+On chess.com, each move that a player makes is rated on a 9-point scale, ranging from “Missed win” (the worst) to “Brilliant” (the best).   The algorithm determines which classification it is in by calculating how the move affected the percentage of win scenarios that are still available to the player.  For example, by making a ‘Mistake’ move, that player eliminated between 10% and 20% of possible win scenarios for themselves. We will compare the number of “bad moves” (4 inaccuracy, 3 mistake, 2 blunder, 1 missed win) and “good moves” (9 brilliant, 8 best, 7 excellent, 6 good) between treatment and control groups.
+
+
+Move classification
+% Loss in win scenarios
+Lower Limit
+Upper Limit
+Brilliant + Best
+0%
+0%
+Excellent
+0%
+2%
+Good
+2%
+5%
+Inaccuracy
+5%
+10%
+Mistake
+10%
+20%
+Blunder	
+20%
+100%
+Source: chess.com
+
+Metrics to track: 
+Total number of good and bad moves
+Opponent player rating (for usage as a blocking variable)  
+
+We will test our results under the sharp null hypothesis, assuming that, on an individual level, our opponents would not be impacted by any type of game play banter.  
+
+Recruitment 
+Participants in this study will be online chess players on the platform chess.com. Subjects will be randomly assigned to a chess game based on the chess.com matching algorithm, and we will engage with them according to our approach outlined above.

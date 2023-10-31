@@ -1,0 +1,116 @@
+---
+title: "load_chess_games"
+output: html_document
+date: "2023-10-09"
+---
+
+
+```{r}
+# load libraries
+library(bigchess)
+library(data.table)
+library(stargazer)
+library(sandwich)
+library(lmtest)
+```
+
+```{r}
+# read pgn file into chess_games
+chess_games <- read.pgn(
+  con = "pgn_game_files/lichess_sandman353_2023-10-30.pgn"
+)
+
+# and turn it into a data.table
+chess_games <- data.table(chess_games)
+```
+
+```{r}
+# export chess_games to csv for manual entry of accuracies
+
+pilot_file_path <- "chess_games_pilot.csv"
+fwrite(chess_games, pilot_file_path)
+```
+
+```{r}
+# EDIT THE .csv manually
+# and save as "chess_games_pilot_acc.csv"
+
+# read in the new csv
+chess_games_pilot_acc <- fread("chess_games_pilot_acc.csv")
+
+# filter down to the variables we're interested in
+chess_games_pilot_acc <- chess_games_pilot_acc[ , c('opp_accuracy', 'treat')]
+```
+
+```{r}
+# run a regression and build stargazer
+
+pilot_test <- chess_games_pilot_acc[ , lm(opp_accuracy ~ treat)]
+pilot_test_robust <- coefci(pilot_test, vcov. = vcovHC(pilot_test))
+
+stargazer(pilot_test,
+          pilot_test_robust,
+          type = 'text')
+```
+
+```{r}
+# for calculating average number of moves
+
+# drop the last row (maia game)
+chess_games <- head(chess_games, -1)
+
+# find mean and median of N Moves
+mean_value <- mean(chess_games$NMoves)
+median_value <- median(chess_games$NMoves)
+
+# Print the results
+cat("Mean NMoves:", mean_value, "\n")
+cat("Median NMoves:", median_value, "\n")
+```
+
+```{r}
+# drop rows with NA in first 10 moves
+rows_to_drop <- c(6, 16)  # Rows to drop
+
+chess_games_10_moves <- chess_games[-rows_to_drop, ]
+
+
+# Create a vector of column names you want to plot
+columns_to_plot <- c("W1", "B1", "W2", "B2", "W3", "B3", "W4", "B4", "W5", "B5", "W6", "B6", "W7", "B7", "W8", "B8", "W9", "B9", "W10", "B10")
+
+# Loop through the columns and create histograms, ignoring NAs
+# Assuming that chess_games_10_moves is a data.table
+# Loop through the columns and create histograms, ignoring NAs
+for (col in columns_to_plot) {
+  # Extract the specific column and convert it to numeric
+  col_data <- as.numeric(chess_games_10_moves[[col]])
+
+  # Create a histogram for the current column, ignoring NAs
+  hist(col_data[!is.na(col_data)], main = col, xlab = "Value")
+}
+
+
+```
+
+
+```{r}
+# Create a vector of column names you want to plot
+columns_to_plot <- c("W1", "B1", "W2", "B2", "W3", "B3", "W4", "B4", "W5", "B5", "W6", "B6", "W7", "B7", "W8", "B8", "W9", "B9", "W10", "B10")
+
+# Set up the plotting area
+par(mfrow=c(2, 5))  # 2 rows and 5 columns for 10 plots
+
+# Loop through the columns and create histograms, ignoring NAs
+for (col in columns_to_plot) {
+  col_data <- as.numeric(chess_games_10_moves[[col]])
+  col_data <- col_data[!is.na(col_data)]
+
+  # Create a histogram for the current column, using the actual values for the x-axis
+  hist(col_data, main = col, xlab = "Value", breaks = unique(col_data), xlim = range(col_data))
+}
+
+# Reset the plotting parameters
+par(mfrow=c(1, 1))
+
+```
+
