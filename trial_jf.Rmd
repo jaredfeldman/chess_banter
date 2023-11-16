@@ -1,0 +1,117 @@
+---
+title: "Chess Trial Charts"
+date: \today
+output:
+  pdf_document:
+    number_sections: no
+---
+
+```{r, message=FALSE, echo=FALSE}
+# load libraries
+library(bigchess)
+library(data.table)
+library(stargazer)
+library(sandwich)
+library(lmtest)
+library(stringr)
+library(ggplot2)
+```
+
+
+```{r, echo=FALSE}
+d_game_log <- fread("/Users/jaredfeldman/Courses/MIDS241/chess_banter/data/trial/game_log.csv")
+d_game_stats <- fread("/Users/jaredfeldman/Courses/MIDS241/chess_banter/data/trial/game_stats_jf.csv")
+```
+
+```{r, echo=FALSE}
+#combine datatables
+
+d_merged <- merge(d_game_log, d_game_stats, by.x = 'game_id', by.y = 'id')
+```
+
+```{r, echo=FALSE}
+# read pgn file into chess_games
+chess_games <- read.pgn(
+  con = "/Users/jaredfeldman/courses/mids241/chess_banter/pgn_game_files/lichess_sandman353_2023-11-14.pgn"
+)
+
+# and turn it into a data.table
+chess_games <- data.table(chess_games)
+
+# extract game_id
+chess_games[ , game_id := str_extract(Site, "[^/]+$")]
+```
+
+```{r, echo=FALSE}
+#combine all 3 tables
+d_merged_final <- merge(d_merged, chess_games, by.x = 'game_id', by.y = 'game_id')
+
+# turn d_merged_final into a .csv
+#fwrite(d_merged_final, "game_data_trial_jf.csv")
+
+```
+
+```{r, include=FALSE, warning=FALSE, echo=FALSE}
+quick_model                    <- d_merged_final[ , lm(op_accuracy ~ treat_type * chat_type)]
+quick_model_robust             <- coefci(quick_model)
+
+model_placebo_vs_chatty        <- d_merged_final[ , lm(op_accuracy ~ chat_type)]
+model_placebo_vs_chatty_robust <- coefci(model_placebo_vs_chatty)
+
+stargazer(quick_model,
+          type = 'text')
+```
+
+```{r, include=TRUE, echo=FALSE}
+ggplot(d_merged_final, aes(x = op_rating, color = factor(treat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Rating by Treatment Type",
+       x = "Opponent Rating", y = "Density") +
+  scale_color_manual(values = c("red", alpha("forestgreen"))) +
+  theme_minimal()
+```
+
+```{r, include=TRUE, echo=FALSE}
+ggplot(d_merged_final, aes(x = op_accuracy, color = factor(treat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Accuracy by Treatment Type",
+       x = "Opponent Accuracy", y = "Density") +
+  scale_color_manual(values = c("red", alpha("forestgreen"))) +
+  theme_minimal()
+```
+```{r, include=TRUE, echo=FALSE}
+ggplot(d_merged_final, aes(x = op_blunder, color = factor(treat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Blunders by Treatment Type",
+       x = "Opponent Blunders", y = "Density") +
+  scale_color_manual(values = c("red", alpha("forestgreen"))) +
+  theme_minimal()
+```
+
+```{r, include=TRUE, echo=FALSE}
+ggplot(d_merged_final, aes(x = op_mistake, color = factor(treat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Mistakes by Treatment Type",
+       x = "Opponent Mistakes", y = "Density") +
+  scale_color_manual(values = c("red", alpha("forestgreen"))) +
+  theme_minimal()
+```
+
+
+```{r, include=TRUE, echo=FALSE}
+ggplot(d_merged_final, aes(x = op_inaccuracy, color = factor(treat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Inaccuracies by Treatment Type",
+       x = "Opponent Inaccuracies", y = "Density") +
+  scale_color_manual(values = c("red", alpha("forestgreen"))) +
+  theme_minimal()
+```
+
+```{r, include=TRUE, echo=FALSE}
+ggplot(d_merged_final, aes(x = op_acpl, color = factor(treat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Average Centipawn Loss by Treatment Type",
+       x = "Opponent Average Centipawn Loss", y = "Density") +
+  scale_color_manual(values = c("red", alpha("forestgreen"))) +
+  theme_minimal()
+```
