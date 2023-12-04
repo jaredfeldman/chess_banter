@@ -1,5 +1,5 @@
 ---
-title: "Chess Banter"
+title: "Chess Banter: Does engaging with an opponent in online chess impact their performance?"
 author: "Reed Evans, Jared Feldman, Jerry Gonzalez, Randy Louie"
 date: \today
 output: 
@@ -45,7 +45,6 @@ inline_reference <- "r inline_reference"
 ```{r, child='./introduction.Rmd'}
 ```
 
-\newpage
 
-```{r, child='./power_analysis.Rmd'}
+```{r, child='./methodology.Rmd'}
 ```
