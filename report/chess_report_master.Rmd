@@ -5,6 +5,9 @@ date: \today
 output: 
   pdf_document: 
     number_sections: true
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
 #output: github_document
 ---
 
@@ -29,6 +32,8 @@ library(foreign)
 
 library(knitr)
 library(tidyverse)
+library(kableExtra)
+library(stargazer)
 inline_reference <- "r inline_reference"
 ```
 
@@ -47,4 +52,8 @@ inline_reference <- "r inline_reference"
 
 
 ```{r, child='./methodology.Rmd'}
+```
+
+
+```{r, child='./results_and_discussion.Rmd'}
 ```

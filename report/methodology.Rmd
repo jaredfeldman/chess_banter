@@ -20,6 +20,10 @@ library(dplyr)
 library(ggplot2)
 ```
 
+ITT = $E[Y_i(z = 1)] -E[Y_i(z = 0)]$
+
+
+ITT = E[Yi(z = 1)] − E[Yi(z = 0)]
 
 ```{r Function-for-simulation, include = FALSE}
 # Create simulation function using linear regression
@@ -94,7 +98,7 @@ for (eff in effects){ #loop through effect sizes
 }
 ```
 
-```{r plot 1, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Power Analysis"}
+```{r plot 1, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Power Analysis for Different Treatment Effects"}
 # plot the results
 
 g_total$Effect_size <- factor(g_total$Effect_size, levels = c("5%", "7.5%", "10%", "15%"))

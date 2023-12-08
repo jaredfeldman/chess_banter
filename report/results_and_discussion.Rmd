@@ -1,0 +1,102 @@
+```{r load packages, warning=FALSE, message=FALSE, echo=FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(ggplot2)
+library(patchwork)
+
+library(foreign)
+
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(stargazer)
+inline_reference <- "r inline_reference"
+```
+
+# Results and Discussion
+
+```{r read_data, include=FALSE}
+exp_data <- fread('../data/exp_data.csv')
+```
+
+```{r feature engineer, include=FALSE}
+# one-hot encode maia win
+exp_data[ , maia_win := ifelse(winner == 'maia', 1, 0)]
+
+# one-hot encode maia checkmate
+exp_data[ , maia_checkmate := ifelse(winner == 'maia' & status == 'mate', 1, 0)]
+
+# one-hot encode opp checkmate
+exp_data[ , opp_checkmate := ifelse(winner == 'opp' & status == 'mate', 1, 0)]
+
+# one-hot encode opp resign
+exp_data[ , opp_resign := ifelse(winner == 'maia' & status == 'resign', 1, 0)]
+
+# one-hot encode draw
+exp_data[ , draw := ifelse(status == 'draw', 1, 0)]
+
+# one-hot encode treatment
+exp_data[ , treat := ifelse(chat_type == 'Chatty', 1, 0)]
+
+```
+
+
+## Checks and Balances
+
+### Covariate Balance Check
+
+```{r opp_ranking balance check, include = FALSE, echo = FALSE}
+model_anova_opp_rating <- aov(opp_rating ~ chat_type, exp_data)
+anova_opp_rating_summary <- summary(model_anova_opp_rating)
+anova_opp_rating_p <- anova_opp_rating_summary[[1]][["Pr(>F)"]][1]
+```
+
+
+```{r display anova, echo=FALSE, include=TRUE}
+anova_opp_rating_summary
+```
+
+
+
+```{r plot 2 opp_rating by chat_type, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
+ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Rating by Chat Type",
+       x = "Opponent Rating", y = "Density") +
+  scale_color_manual(values = c("red", "blue", "forestgreen"),
+                     labels = c("Treatment", "Control", "Placebo"),
+                     name = "Treatment Type") +
+  theme_minimal()
+```
+## Treatment Effects
+
+### Intent to Treat (ITT) Effect
+
+```{r ITT calc, echo=FALSE,include=FALSE}
+exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
+
+itt_win        <- exp_data_c_t[ , lm(maia_win ~ treat)]
+itt_maia_mate  <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
+itt_opp_mate   <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
+itt_opp_resign <- exp_data_c_t[ , lm(opp_resign ~ treat)]
+itt_draw       <- exp_data_c_t[ , lm(draw ~ treat)]
+itt_opp_acc    <- exp_data_c_t[ , lm(opp_acc ~ treat)]
+
+```
+
+```{r}
+models <- list(itt_win,
+          itt_maia_mate,
+          itt_opp_mate,
+          itt_opp_resign,
+          itt_draw,
+          itt_opp_acc)
+
+stargazer(models,
+          type = 'text')
+```
+
+
