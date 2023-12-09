@@ -1,4 +1,4 @@
-```{r load packages, warning=FALSE, message=FALSE, echo=FALSE}
+```{r , warning=FALSE, message=FALSE, echo=FALSE}
 library(data.table)
 
 library(sandwich)
@@ -77,26 +77,132 @@ ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
 
 ```{r ITT calc, echo=FALSE,include=FALSE}
 exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
+exp_data_c_t <- exp_data_c_t[complete.cases(exp_data_c_t$respond), ]
 
-itt_win        <- exp_data_c_t[ , lm(maia_win ~ treat)]
-itt_maia_mate  <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
-itt_opp_mate   <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
-itt_opp_resign <- exp_data_c_t[ , lm(opp_resign ~ treat)]
-itt_draw       <- exp_data_c_t[ , lm(draw ~ treat)]
-itt_opp_acc    <- exp_data_c_t[ , lm(opp_acc ~ treat)]
+itt_win          <- exp_data_c_t[ , lm(maia_win ~ treat)]
+itt_maia_mate    <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
+itt_opp_mate     <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
+itt_opp_resign   <- exp_data_c_t[ , lm(opp_resign ~ treat)]
+itt_draw         <- exp_data_c_t[ , lm(draw ~ treat)]
+itt_opp_acc      <- exp_data_c_t[ , lm(opp_acc ~ treat)]
+itt_opp_blunders <- exp_data_c_t[ , lm(opp_blunders ~ treat)]
+itt_opp_mistakes <- exp_data_c_t[ , lm(opp_mistakes ~ treat)]
+itt_opp_acpl      <- exp_data_c_t[ , lm(opp_acpl ~ treat)]
+
 
 ```
 
-```{r}
+
+```{r, out.extra='angle=90', include=TRUE, results='asis', echo=FALSE}
 models <- list(itt_win,
           itt_maia_mate,
           itt_opp_mate,
           itt_opp_resign,
           itt_draw,
-          itt_opp_acc)
+          itt_opp_acc,
+          itt_opp_blunders,
+          itt_opp_mistakes,
+          itt_opp_acpl
+          )
+
+measures <- c("maia win",
+              "maia mate",
+              "opp mate",
+              "opp resign",
+              "draw",
+              "opp acc",
+              "opp blunders",
+              "opp mistakes",
+              "opp acpl")
 
 stargazer(models,
-          type = 'text')
+          type = 'latex',
+          header = FALSE)
+```
+
+## Complier Average Causal Effect (CACE)
+
+```{r cace function}
+# define function to calculate cace
+get_cace <- function(data, treat_var, compliance_var, outcome_var) {
+  # first stage regression
+  first_stage <- lm(paste(compliance_var, "~", treat_var), data = data)
+  
+  # extract predicted values of compliance from the first stage
+  predicted_compliance <- predict(first_stage)
+  
+  # create a new data frame with the predicted compliance values
+  data_with_predicted <- cbind(data, predicted_compliance)
+  
+  # Second stage regression
+  cace_model <- lm(paste(outcome_var, "~ predicted_compliance"), data = data_with_predicted)
+  
+  # Obtain summary statistics for the CACE model
+  cace_model
+}
+
+```
+
+```{r}
+cace_maia_win <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
+
+
+cace_win          <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
+cace_maia_mate    <- get_cace(exp_data_c_t, "treat", "respond", "maia_checkmate")
+cace_opp_mate     <- get_cace(exp_data_c_t, "treat", "respond", "opp_checkmate")
+cace_opp_resign   <- get_cace(exp_data_c_t, "treat", "respond", "opp_resign")
+cace_draw         <- get_cace(exp_data_c_t, "treat", "respond", "draw")
+cace_opp_acc      <- get_cace(exp_data_c_t, "treat", "respond", "opp_acc")
+cace_opp_blunders <- get_cace(exp_data_c_t, "treat", "respond", "opp_blunders")
+cace_opp_mistakes <- get_cace(exp_data_c_t, "treat", "respond", "opp_mistakes")
+cace_opp_acpl     <- get_cace(exp_data_c_t, "treat", "respond", "opp_acpl")
+
+summary(cace_maia_mate)
+```
+
+```{r, out.extra='angle=90', include=TRUE, results='asis', echo=FALSE}
+cace_models <- list(cace_win,
+                    cace_maia_mate,
+                    cace_opp_mate,
+                    cace_opp_resign,
+                    cace_draw,
+                    cace_opp_acc,
+                    cace_opp_blunders,
+                    cace_opp_mistakes,
+                    cace_opp_acpl
+                    )
+
+stargazer(cace_models,
+          type = 'latex',
+          header = FALSE)
+```
+
+```{r cace p-values}
+# extract p_values and assign to variables for Benjamini & Hochberg adjustment
+cace_win_p          <- summary(cace_win)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_maia_mate_p    <- summary(cace_maia_mate)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_opp_mate_p     <- summary(cace_opp_mate)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_opp_resign_p   <- summary(cace_opp_resign)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_draw_p         <- summary(cace_draw)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_opp_acc_p      <- summary(cace_opp_acc)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_opp_blunders_p <- summary(cace_opp_blunders)$coefficients["predicted_compliance", "Pr(>|t|)"] 
+cace_opp_mistakes_p <- summary(cace_opp_mistakes)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_opp_acpl_p     <- summary(cace_opp_acpl)$coefficients["predicted_compliance", "Pr(>|t|)"]
+```
+
+```{r BH adjustment, include=TRUE, echo=FALSE}
+bh_p_values <- c(cace_win_p,
+                 cace_maia_mate_p,
+                 cace_opp_mate_p,
+                 cace_opp_resign_p,
+                 cace_draw_p,
+                 cace_opp_acc_p,
+                 cace_opp_blunders_p,
+                 cace_opp_mistakes_p,
+                 cace_opp_acpl_p)
+
+adjusted_ps <- p.adjust(bh_p_values, method = "BH")
+print(kable(adjusted_ps))
 ```
 
 

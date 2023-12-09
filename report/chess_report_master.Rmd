@@ -5,6 +5,7 @@ date: \today
 output: 
   pdf_document: 
     number_sections: true
+    latex_engine: xelatex # or lualatex
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -34,6 +35,7 @@ library(knitr)
 library(tidyverse)
 library(kableExtra)
 library(stargazer)
+library(writexl)
 inline_reference <- "r inline_reference"
 ```
 

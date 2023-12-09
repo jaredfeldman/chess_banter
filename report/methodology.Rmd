@@ -2,10 +2,6 @@
 
 ## Overview
 
-## Experiment Design
-
-### Treatment Variants 
-
 ## Power Analysis 
 
 We performed a pilot test of 10 games with our chess bot that played at a consistent 1500 (average) level against real opponents on lichess.com.  We found that the opponents played at an average of 49% accuracy and had a 13.8% standard deviation in their accuracy rating.  We used these values in our power analysis in order to determine the likelihood that we would accurately detect a significant effect, if the effect actually existed.
@@ -115,4 +111,9 @@ plot <- ggplot(data = g_total, aes(x=x, y=y, color = Effect_size)) +
 plot
 ```
 
+## Experiment Design
+
+### Control and Treatment Variants
+### Lichess Randomization
+### Identifying Compliers and Non-compliers
 
