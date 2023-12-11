@@ -16,10 +16,6 @@ library(dplyr)
 library(ggplot2)
 ```
 
-ITT = $E[Y_i(z = 1)] -E[Y_i(z = 0)]$
-
-
-ITT = E[Yi(z = 1)] − E[Yi(z = 0)]
 
 ```{r Function-for-simulation, include = FALSE}
 # Create simulation function using linear regression
@@ -114,6 +110,17 @@ plot
 ## Experiment Design
 
 ### Control and Treatment Variants
+
 ### Lichess Randomization
+Lichess uses a popular rating method called Glicko-2, which uses confidence intervals when calculating ratings for players (https://lichess.org/faq#ratings). When players first start on Lichess, the rating starts at 1500 +/- 1000. As players play more rated games, their rating changes and the confidence interval decreases. Lichess uses a combination of a player’s ratings and confidence intervals to pair with similar players when using the “Quick Pairing” pairing option, which is the method we used for our games.
+
+Each of the bots that we used were identical, and trained to play at a 1500 Glicko-2 rating level. We relied on Lichess’s randomization strategy to pair us with similarly ranked players. This allowed us to control for different player skill levels while conducting our experiment.
+
 ### Identifying Compliers and Non-compliers
+We define a complier as someone who engages with the chat room when we issue a dose of treatment, allowing us to confirm that our opponent received the treatment. We theorized that there may be reasons why an opponent may not engage:
+Opponent does not speak English (our language used in treatment).
+Opponent does not see the chat due to screen resolution or device used.
+Opponent does not want to engage in chat.
+
+Using the Lichess API, we are able to pull the full chat room history for a game, containing both the chat from our bot and the chat from our opponent. After we completed all of our games, we were able to use this information to identify which opponents complied (i.e., engaged in the chat room). We treated this as a binary variable, and did not further evaluate the responses from opponents who complied.
 

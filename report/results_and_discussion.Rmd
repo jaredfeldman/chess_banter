@@ -48,18 +48,21 @@ exp_data[ , treat := ifelse(chat_type == 'Chatty', 1, 0)]
 
 ### Covariate Balance Check
 
+### Placebo vs. Treatment
+
+### Opponent Distribution Across Treatment Assignments
+
 ```{r opp_ranking balance check, include = FALSE, echo = FALSE}
 model_anova_opp_rating <- aov(opp_rating ~ chat_type, exp_data)
 anova_opp_rating_summary <- summary(model_anova_opp_rating)
 anova_opp_rating_p <- anova_opp_rating_summary[[1]][["Pr(>F)"]][1]
 ```
 
+As described above, we relied on Lichess to randomly assign similarly-ranked players to each of our bots, and we expected the distribution of these rankings to be statistically the same across each treatment variant. In order to test this assumption, we conducted a one-way ANOVA, and a p-value of `r anova_opp_rating_p`. In this case, we are unable to reject the null hypothesis, suggesting that there are no significant differences between each treatment group, in terms of distribution of their accuracy.
 
 ```{r display anova, echo=FALSE, include=TRUE}
 anova_opp_rating_summary
 ```
-
-
 
 ```{r plot 2 opp_rating by chat_type, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
 ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
@@ -71,9 +74,19 @@ ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
                      name = "Treatment Type") +
   theme_minimal()
 ```
+
+### Non-compliance
+In our experiment, we only tested for on-sides compliance. In particular, we tested whether someone was intended to receive treatment, but did not engage in the chat room. Conversely, our bot was not programmed to engage with opponents if they chatted first, so we did not have concerns of non-compliance where someone may have been targeted for control, but instead received treatment.
+
 ## Treatment Effects
 
 ### Intent to Treat (ITT) Effect
+Our first step in evaluating the outcomes of our experiment is to estimate the Intent to Treat ($ITT$). The $ITT$ measures the outcomes of our experiment based on treatment assignment, without considering compliance rate. The $ITT$ can be calculated as:
+
+$ITT$ = $E[Y_i(z = 1)] -E[Y_i(z = 0)]$
+
+where z signifies the assignment of the subject. Below show the $ITT$ across 9 different outcomes variables.
+
 
 ```{r ITT calc, echo=FALSE,include=FALSE}
 exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
@@ -120,7 +133,14 @@ stargazer(models,
           header = FALSE)
 ```
 
-## Complier Average Causal Effect (CACE)
+### Complier Average Causal Effect (CACE)
+While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. As seen below, not everyone received their targeted dose of treatment, which we will now take into account in calculating the Complier Average Causal Effect ($CACE$).
+
+The $CACE$ is calculated using the following formula:
+
+$CACE$ = $ITT$/$ITT_d$
+
+where $ITT_d$ is the proportion of compliers in the treatment group (the “take-up rate”). In our case, we can see above that the take-up rate is approximately 31%, which scales our $ITT$ by a factor of approximately 2.6.
 
 ```{r cace function}
 # define function to calculate cace
@@ -177,6 +197,11 @@ stargazer(cace_models,
           header = FALSE)
 ```
 
+### Benjamini-Hochberg (BH) Procedure
+Since we performed nine statistical tests, we have an increased change of finding a $p$ value less than or equal to 0.05 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
+
+In this method, we take the $p$ values from each of our $CACE$ outcomes and conduct the BH procedure. As seen below, when correcting for a potential FDR, none of our $p$ values are statistically significant.
+
 ```{r cace p-values}
 # extract p_values and assign to variables for Benjamini & Hochberg adjustment
 cace_win_p          <- summary(cace_win)$coefficients["predicted_compliance", "Pr(>|t|)"]
@@ -191,7 +216,8 @@ cace_opp_acpl_p     <- summary(cace_opp_acpl)$coefficients["predicted_compliance
 ```
 
 ```{r BH adjustment, include=TRUE, echo=FALSE}
-bh_p_values <- c(cace_win_p,
+# grab the p-values for each CACE
+cace_p_values <- c(cace_win_p,
                  cace_maia_mate_p,
                  cace_opp_mate_p,
                  cace_opp_resign_p,
@@ -201,8 +227,32 @@ bh_p_values <- c(cace_win_p,
                  cace_opp_mistakes_p,
                  cace_opp_acpl_p)
 
-adjusted_ps <- p.adjust(bh_p_values, method = "BH")
-print(kable(adjusted_ps))
+# sort from smallest to largest p-values
+cace_p_values_sorted <- sort(cace_p_values)
+
 ```
+
+```{r, include=TRUE, echo=FALSE}
+# sort the p-values from our CACE
+adjusted_bh_ps <- p.adjust(cace_p_values_sorted, method = "BH")
+
+# create a data frame for better formatting
+bh_results <- data.frame(
+  original_p_value = cace_p_values_sorted,
+  adjusted_p_value = adjusted_bh_ps
+)
+
+# display the adjusted p-values
+gt::gt(bh_results) %>%
+  gt::tab_spanner(
+    label = "P-Values Before and After BH",
+    columns = c('original_p_value', 'adjusted_p_value')
+  ) %>%
+  gt::fmt_number(
+    columns = vars('original_p_value', 'adjusted_p_value'),
+    decimals = 3
+  )
+```
+
 
 

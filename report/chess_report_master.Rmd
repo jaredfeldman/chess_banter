@@ -22,6 +22,7 @@ knitr::knit_engines$set(problem_description = function(options) {
 
 ```{r load packages, warning=FALSE, message=FALSE}
 library(data.table)
+library(gt)
 
 library(sandwich)
 library(lmtest)
@@ -38,8 +39,6 @@ library(stargazer)
 library(writexl)
 inline_reference <- "r inline_reference"
 ```
-
-
 
 \tableofcontents
 \newpage
