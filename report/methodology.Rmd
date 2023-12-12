@@ -102,10 +102,53 @@ plot <- ggplot(data = g_total, aes(x=x, y=y, color = Effect_size)) +
   scale_x_continuous(name="Samples", limits=c(0, 400), labels=c("0","50","100", "150","200","250","300","350", "400"), breaks=seq(0,400,50)) +
   ylab("Power") + 
   geom_hline(yintercept = 0.8, color = "red", linetype="dashed") +
-  ggtitle("Sample size vs Power, mean Accuracy = 69%, SD accuracy = 13.8") +
+  ggtitle("Sample Size vs. Power, Mean Accuracy = 69%, SD Accuracy = 13.8%") +
   scale_color_manual(name="Effect Size", values =c("slategrey", "cyan", "royalblue", "purple"))
 plot
 ```
+
+```{r}
+# read in experiment 1 data
+exp_data <- fread('../data/exp_data.csv')
+```
+
+```{r}
+# read in experiment 2 data
+exp_data_gpt <- fread('../data/exp_data_gpt.csv')
+exp_data_gpt <- exp_data_gpt[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353', 'bcu_555')]
+```
+
+As seen below, for both Experiment 1 and Experiment 2, we were able to achieve our targeted sample size to have at least 80% power.
+
+```{r}
+# determine maximum value across both experiments to have same range on y-axis
+max_count <- max(c(
+  exp_data[, .N, by = chat_type]$N,
+  exp_data_gpt[, .N, by = chat_type]$N
+))
+
+# set up layout for 2 plots side by side
+par(mfrow = c(1, 2))
+
+# experiment 1 plot
+hist_data <- exp_data[, .N, by = chat_type]
+barplot(height = hist_data$N, names.arg = hist_data$chat_type, col = "gray",
+        main = "Experiment 1", xlab = "Treatment Condition", ylab = "Sample Size",
+        ylim = c(0, max_count))  # set y-axis scale using max_count from above
+text(x = barplot(height = hist_data$N, col = "gray", plot = FALSE),
+     y = hist_data$N, labels = hist_data$N, pos = 1, col = "black")
+
+# experiment 2 plot
+hist_data <- exp_data_gpt[, .N, by = chat_type]
+barplot(height = hist_data$N, names.arg = hist_data$chat_type, col = "gray",
+        main = "Experiment 2", xlab = "Treatment Condition", ylab = "Sample Size",
+        ylim = c(0, max_count))  # set y-axis scale using max_count from above
+text(x = barplot(height = hist_data$N, col = "gray", plot = FALSE),
+     y = hist_data$N, labels = hist_data$N, pos = 1, col = "black")
+
+```
+
+
 
 ## Experiment Design
 

@@ -241,7 +241,7 @@ stargazer(cace_models,
 ```
 
 ### Benjamini-Hochberg (BH) Procedure
-Since we performed nine statistical tests, we have an increased change of finding a $p$ value less than or equal to 0.05 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
+Since we performed nine statistical tests, we have an increased probability of finding a $p$ value less than or equal to 0.05 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
 
 In this method, we take the $p$ values from each of our $CACE$ outcomes and conduct the BH procedure. As seen below, when correcting for a potential FDR, none of our $p$ values are statistically significant.
 
