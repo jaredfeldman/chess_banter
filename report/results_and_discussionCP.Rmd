@@ -38,8 +38,8 @@ exp_data[ , opp_resign := ifelse(winner == 'maia' & status == 'resign', 1, 0)]
 # one-hot encode draw
 exp_data[ , draw := ifelse(status == 'draw', 1, 0)]
 
-# one-hot encode treatment
-exp_data[ , treat := ifelse(chat_type == 'Chatty', 1, 0)]
+# one-hot encode treatment, this time "treat" means "Placebo"
+exp_data[ , treat := ifelse(chat_type == 'Placebo', 1, 0)]
 
 ```
 
@@ -89,60 +89,22 @@ where z signifies the assignment of the subject. Below show the $ITT$ across 9 d
 
 
 ```{r ITT calc, echo=FALSE,include=FALSE}
-exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
-#exp_data_c_t <- exp_data_c_t[complete.cases(exp_data_c_t$respond), ]
+exp_data_c_p <- exp_data[chat_type %in% c("Placebo", "Control") , ]
+#exp_data_c_p <- exp_data_c_p[complete.cases(exp_data_c_p$respond), ]
 
-#exp_data_c_t[, opp_rating := opp_rating / 1500]
+#exp_data_c_p[, opp_rating := opp_rating / 1500]
 
-itt_win           <- exp_data_c_t[ , lm(maia_win ~  num_moves + opp_rating  + respond*treat)]
-itt_maia_mate     <- exp_data_c_t[ , lm(maia_checkmate ~  num_moves + opp_rating  + respond*treat)]
-itt_opp_mate      <- exp_data_c_t[ , lm(opp_checkmate ~  num_moves + opp_rating  + respond*treat)]
-itt_opp_resign    <- exp_data_c_t[ , lm(opp_resign ~ num_moves + opp_rating  + respond*treat)]
-itt_draw          <- exp_data_c_t[ , lm(draw ~ num_moves + opp_rating  + respond*treat)]
-itt_opp_acc       <- exp_data_c_t[ , lm(opp_acc ~ num_moves + opp_rating  + respond*treat)]
-itt_opp_blunders  <- exp_data_c_t[ , lm(opp_blunders ~ num_moves + opp_rating  + respond*treat)]
-itt_opp_mistakes  <- exp_data_c_t[ , lm(opp_mistakes ~ num_moves + opp_rating + respond*treat)]
-itt_opp_acpl      <- exp_data_c_t[ , lm(opp_acpl ~ num_moves + opp_rating  + respond*treat)]
-itt_opp_move_time <- exp_data_c_t[ , lm(opp_avg_move_time ~ num_moves + opp_rating  + respond*treat)]
+itt_win           <- exp_data_c_p[ , lm(maia_win ~  num_moves + opp_rating  + respond*treat)]
+itt_maia_mate     <- exp_data_c_p[ , lm(maia_checkmate ~  num_moves + opp_rating  + respond*treat)]
+itt_opp_mate      <- exp_data_c_p[ , lm(opp_checkmate ~  num_moves + opp_rating  + respond*treat)]
+itt_opp_resign    <- exp_data_c_p[ , lm(opp_resign ~ num_moves + opp_rating  + respond*treat)]
+itt_draw          <- exp_data_c_p[ , lm(draw ~ num_moves + opp_rating  + respond*treat)]
+itt_opp_acc       <- exp_data_c_p[ , lm(opp_acc ~ num_moves + opp_rating  + respond*treat)]
+itt_opp_blunders  <- exp_data_c_p[ , lm(opp_blunders ~ num_moves + opp_rating  + respond*treat)]
+itt_opp_mistakes  <- exp_data_c_p[ , lm(opp_mistakes ~ num_moves + opp_rating + respond*treat)]
+itt_opp_acpl      <- exp_data_c_p[ , lm(opp_acpl ~ num_moves + opp_rating  + respond*treat)]
+itt_opp_move_time <- exp_data_c_p[ , lm(opp_avg_move_time ~ num_moves + opp_rating  + respond*treat)]
 
-
-```
-
-```{r}
-rating_maia_win           <- exp_data_c_t[ , lm(maia_win ~ opp_rating)]
-rating_maia_mate           <- exp_data_c_t[ , lm(maia_checkmate ~ opp_rating)]
-rating_opp_mate          <- exp_data_c_t[ , lm(opp_checkmate ~ opp_rating)]
-rating_opp_resign           <- exp_data_c_t[ , lm(opp_resign ~ opp_rating)]
-rating_draw         <- exp_data_c_t[ , lm(draw ~ opp_rating)]
-rating_opp_acc           <- exp_data_c_t[ , lm(opp_acc ~ opp_rating)]
-rating_opp_blunders           <- exp_data_c_t[ , lm(opp_blunders ~ opp_rating)]
-rating_opp_mistakes       <- exp_data_c_t[ , lm(opp_mistakes ~ opp_rating)]
-rating_opp_acpl           <- exp_data_c_t[ , lm(opp_acpl ~ opp_rating)]
-rating_opp_move_time           <- exp_data_c_t[ , lm(opp_avg_move_time ~ opp_rating)]
-
-models <- list(rating_maia_win,
-          rating_maia_mate,
-          rating_opp_mate,
-          rating_opp_resign,
-          rating_draw,
-          rating_opp_acc,
-          rating_opp_blunders,
-          rating_opp_mistakes,
-          rating_opp_acpl,
-          rating_opp_move_time
-          )
-
-stargazer(models,
-          type = 'text',
-          header = FALSE)
-```
-
-```{r}
-hist(predict(rating_maia_win))
-```
-
-```{r}
-table(exp_data_c_t$maia_win)
 ```
 
 
@@ -173,6 +135,37 @@ stargazer(models,
           type = 'text',
           header = FALSE)
 ```
+
+```{r}
+rating_maia_win           <- exp_data_c_p[ , lm(maia_win ~ opp_rating)]
+rating_maia_mate           <- exp_data_c_p[ , lm(maia_checkmate ~ opp_rating)]
+rating_opp_mate          <- exp_data_c_p[ , lm(opp_checkmate ~ opp_rating)]
+rating_opp_resign           <- exp_data_c_p[ , lm(opp_resign ~ opp_rating)]
+rating_draw         <- exp_data_c_p[ , lm(draw ~ opp_rating)]
+rating_opp_acc           <- exp_data_c_p[ , lm(opp_acc ~ opp_rating)]
+rating_opp_blunders           <- exp_data_c_p[ , lm(opp_blunders ~ opp_rating)]
+rating_opp_mistakes       <- exp_data_c_p[ , lm(opp_mistakes ~ opp_rating)]
+rating_opp_acpl           <- exp_data_c_p[ , lm(opp_acpl ~ opp_rating)]
+rating_opp_move_time           <- exp_data_c_p[ , lm(opp_avg_move_time ~ opp_rating)]
+
+models <- list(rating_maia_win,
+          rating_maia_mate,
+          rating_opp_mate,
+          rating_opp_resign,
+          rating_draw,
+          rating_opp_acc,
+          rating_opp_blunders,
+          rating_opp_mistakes,
+          rating_opp_acpl,
+          rating_opp_move_time
+          )
+
+stargazer(models,
+          type = 'text',
+          header = FALSE)
+```
+
+
 
 ### Complier Average Causal Effect (CACE)
 While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. As seen below, not everyone received their targeted dose of treatment, which we will now take into account in calculating the Complier Average Causal Effect ($CACE$).
@@ -205,19 +198,19 @@ get_cace <- function(data, treat_var, compliance_var, outcome_var) {
 ```
 
 ```{r}
-cace_maia_win <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
+cace_maia_win <- get_cace(exp_data_c_p, "treat", "respond", "maia_win")
 
 
-cace_win               <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
-cace_maia_mate         <- get_cace(exp_data_c_t, "treat", "respond", "maia_checkmate")
-cace_opp_mate          <- get_cace(exp_data_c_t, "treat", "respond", "opp_checkmate")
-cace_opp_resign        <- get_cace(exp_data_c_t, "treat", "respond", "opp_resign")
-cace_draw              <- get_cace(exp_data_c_t, "treat", "respond", "draw")
-cace_opp_acc           <- get_cace(exp_data_c_t, "treat", "respond", "opp_acc")
-cace_opp_blunders      <- get_cace(exp_data_c_t, "treat", "respond", "opp_blunders")
-cace_opp_mistakes      <- get_cace(exp_data_c_t, "treat", "respond", "opp_mistakes")
-cace_opp_acpl          <- get_cace(exp_data_c_t, "treat", "respond", "opp_acpl")
-cace_opp_move_time     <- get_cace(exp_data_c_t, "treat", "respond", "opp_avg_move_time")
+cace_win               <- get_cace(exp_data_c_p, "treat", "respond", "maia_win")
+cace_maia_mate         <- get_cace(exp_data_c_p, "treat", "respond", "maia_checkmate")
+cace_opp_mate          <- get_cace(exp_data_c_p, "treat", "respond", "opp_checkmate")
+cace_opp_resign        <- get_cace(exp_data_c_p, "treat", "respond", "opp_resign")
+cace_draw              <- get_cace(exp_data_c_p, "treat", "respond", "draw")
+cace_opp_acc           <- get_cace(exp_data_c_p, "treat", "respond", "opp_acc")
+cace_opp_blunders      <- get_cace(exp_data_c_p, "treat", "respond", "opp_blunders")
+cace_opp_mistakes      <- get_cace(exp_data_c_p, "treat", "respond", "opp_mistakes")
+cace_opp_acpl          <- get_cace(exp_data_c_p, "treat", "respond", "opp_acpl")
+cace_opp_move_time     <- get_cace(exp_data_c_p, "treat", "respond", "opp_avg_move_time")
 
 summary(cace_maia_mate)
 ```
