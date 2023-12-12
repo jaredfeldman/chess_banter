@@ -72,8 +72,8 @@ ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))) +
   geom_density(alpha = 0.5) +
   labs(title = "Opponent Rating by Chat Type",
        x = "Opponent Rating", y = "Density") +
-  scale_color_manual(values = c("red", "blue", "forestgreen"),
-                     labels = c("Treatment", "Control", "Placebo"),
+  scale_color_manual(values = c("red", "blue"),
+                     labels = c("Treatment", "Control"),
                      name = "Treatment Type") +
   theme_minimal()
 ```

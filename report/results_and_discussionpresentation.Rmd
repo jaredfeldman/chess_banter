@@ -59,7 +59,7 @@ anova_opp_rating_summary
 ```{r plot 2 opp_rating by chat_type, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
 ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
   geom_density(alpha = 0.5) +
-  labs(title = "Experiment 1: Opponent Rating by Chat Type",
+  labs(title = "Preliminary Experiment: Opponent Rating by Chat Type",
        x = "Opponent Rating", y = "Density") +
   scale_color_manual(values = c("red", "blue", "forestgreen"),
                      labels = c("Treatment", "Control", "Placebo"),
@@ -249,7 +249,7 @@ bh_results <- data.frame(
 # display the adjusted p-values
 gt::gt(bh_results) %>%
   gt::tab_spanner(
-    label = "Experiment 1: Treatment",
+    label = "Preliminary Experiment: Treatment",
     columns = c('original_p_value', 'adjusted_p_value')
   ) %>%
   gt::fmt_number(
@@ -267,7 +267,7 @@ gt::gt(bh_results) %>%
 ############### CONTROL VS PLACEBO ####################
 
 ```{r placebo ITT calc, echo=FALSE,include=FALSE}
-exp_data_c_p <- exp_data[chat_type %in% c("Placebo", "Control") , ]
+exp_data_c_p <- exp_data[chat_type %in% c("Placebo", "Control")]
 
 # only include rows where respond != NA
 exp_data_c_p <- exp_data_c_p[complete.cases(exp_data_c_p$respond), ]
@@ -410,7 +410,7 @@ placebo_bh_results <- data.frame(
 # display the adjusted p-values
 gt::gt(placebo_bh_results) %>%
   gt::tab_spanner(
-    label = "Experiment 1: Placebo",
+    label = "Preliminary Experiment: Placebo",
     columns = c('original_p_value', 'adjusted_p_value')
   ) %>%
   gt::fmt_number(
@@ -467,7 +467,7 @@ gpt_anova_opp_rating_summary
 ```{r plot 3 opp_rating by chat_type, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
 ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))) +
   geom_density(alpha = 0.5) +
-  labs(title = "Experiment 2: Opponent Rating by Chat Type",
+  labs(title = "GPT Experiment: Opponent Rating by Chat Type",
        x = "Opponent Rating", y = "Density") +
   scale_color_manual(values = c("red", "blue"),
                      labels = c("ChatGPT", "Control"),
@@ -660,7 +660,7 @@ gpt_bh_results <- data.frame(
 # display the adjusted p-values
 gt::gt(gpt_bh_results) %>%
   gt::tab_spanner(
-    label = "Experiment 2: ChatGPT",
+    label = "Main Experiment: ChatGPT",
     columns = c('original_p_value', 'adjusted_p_value')
   ) %>%
   gt::fmt_number(
@@ -668,7 +668,5 @@ gt::gt(gpt_bh_results) %>%
     decimals = 3
   )
 ```
-
-
 
 
