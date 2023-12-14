@@ -1,5 +1,5 @@
 # Abstract
 
-Bullying in online games is a serious problem and online chess is no exception. The purpose of trash talking is to try to decrease opponent performance by distracting opponents into heightened emotions and less logical decision making.  However, these tactics may actually be backfirebackfiring. In our study, opponents were randomly selected by the lichess.orgchess.com matching algorithm and we randomly assigned these opponents to a control, placebo, or treatment group at time of matching. For those in the treatment group, they received non-harassing standardized comments about the inaccuracies in their play.
+Bullying in online games is a serious problem and online chess is no exception. The purpose of trash talking is to try to decrease opponent performance by distracting opponents into heightened emotions and less logical decision making.  However, these tactics may actually be backfiring. In our study, opponents were randomly selected by the lichess.org matching algorithm, and we randomly assigned these opponents to a control, placebo, or treatment group at time of matching. For those in the treatment group, they received non-harassing standardized comments about the inaccuracies in their play.
 
 
