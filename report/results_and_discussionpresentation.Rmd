@@ -57,7 +57,7 @@ anova_opp_rating_summary
 ```
 
 ```{r plot 2 opp_rating by chat_type, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
-ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
+ggplot(exp_data, aes(x = opp_avg_move_time, color = factor(chat_type))) +
   geom_density(alpha = 0.5) +
   labs(title = "Preliminary Experiment: Opponent Rating by Chat Type",
        x = "Opponent Rating", y = "Density") +
@@ -464,13 +464,21 @@ gpt_anova_opp_rating_p <- anova_opp_rating_summary[[1]][["Pr(>F)"]][1]
 gpt_anova_opp_rating_summary
 ```
 
+```{r}
+
+
+d <- exp_data_gpt[num_moves > 20]
+
+```
+
+
 ```{r plot 3 opp_rating by chat_type, include = TRUE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
-ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))) +
+ggplot(d, aes(x = opp_avg_move_time, color = factor(respond))) +
   geom_density(alpha = 0.5) +
-  labs(title = "GPT Experiment: Opponent Rating by Chat Type",
+  labs(title = "GPT Experiment: Move Time by Chat Type",
        x = "Opponent Rating", y = "Density") +
   scale_color_manual(values = c("red", "blue"),
-                     labels = c("ChatGPT", "Control"),
+                     #labels = c("ChatGPT", "Control"),
                      name = "Treatment Type") +
   theme_minimal()
 ```
@@ -574,8 +582,10 @@ stargazer(gpt_cace_models,
           column.labels = measures,
           covariate.labels = "ChatGPT",
           dep.var.labels = 'Outcome Variables',
-          type = 'text',
-          header = FALSE)
+          type = 'latex',
+          header = FALSE,
+          flip=TRUE
+          )
 
 ```
 
