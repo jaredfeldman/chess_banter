@@ -32,22 +32,35 @@ exp_data_gpt <- fread('../data/exp_data_gpt.csv')
 #exp_data_gpt <- exp_data_gpt[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353')]
 exp_data_gpt <- exp_data_gpt[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353', 'bcu_555')]
 
+exp_data <- fread('../data/exp_data.csv')
+
 ```
 
-```{r plot 2 opp_rating by chat_type, include = FALSE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
+```{r plot 2 opp_rating by chat_type, include = FALSE, echo=FALSE}
+prelim_chart <- ggplot(exp_data, aes(x = opp_rating, color = factor(chat_type))) +
+  geom_density(alpha = 0.5) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  labs(title = "Preliminary Experiment", x = "Opponent Rating", y = "Density") +
+  scale_color_manual(values = c("red", "blue", "forestgreen"),
+                     labels = c("Treatment", "Control", "Placebo"),
+                     name = "") +
+  theme(legend.key.height= unit(3, 'mm'), legend.key.width= unit(3, 'mm'), legend.position = 'bottom')
+  #guides(fill=guide_legend(title="")) +
 gpt_chart <- ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))) +
   geom_density(alpha = 0.5) +
-  labs(title = "Opponent Rating by Chat Type",
-       x = "Opponent Rating", y = "Density") +
+  geom_density(alpha = 0.5) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  labs(title = "Main Experiment", x = "Opponent Rating", y = "Density") +
   scale_color_manual(values = c("red", "blue"),
                      labels = c("Treatment", "Control"),
-                     name = "Treatment Type") +
-  theme_minimal()
-
+                     name = "") +
+    theme(legend.key.height= unit(3, 'mm'), legend.key.width= unit(3, 'mm'), legend.position = 'bottom')
 ```
 
-```{r plot 2, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
-gpt_chart | gpt_chart
+```{r plot 2, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Rating Across Treatment Groups"}
+prelim_chart | gpt_chart
 ```
 
 
@@ -82,5 +95,37 @@ The chat bot has been prompted to keep responses short, to one sentence, and rel
 Both experiments raised notable compliance concerns. One significant issue was the potential for an opponent to manually "mute" the chat, rendering us unaware of whether the subject was still receiving treatment. To assess compliance, our approach involved cross-referencing the logs to confirm opponent responses. However, it's crucial to acknowledge the limitations of this method, as an opponent could still "mute" after providing an initial response.
 
 Another factor influencing treatment compliance stems from the global nature of the game, encompassing participants worldwide. In cases where subjects do not speak English, a lack of response may not necessarily indicate non-compliance; rather, it could be attributed to language barriers.
+
+
+
+```{r, include = FALSE}
+DT1 = data.table(
+  response_rate = c(4.5, 35.5, 30.1),
+  treatment = c("Control", "Placebo", "Treatment")
+)
+p_exp_graph <- ggplot(DT1, aes(x= treatment, y = response_rate, label = response_rate)) +
+  geom_col(fill="royalblue3") +
+  ylab("Response rate %") +
+  xlab("") +
+  ggtitle("Preliminary Experiment") +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  ylim(0,40)
+DT2 = data.table(
+  response_rate = c(.45, 33.2),
+  treatment = c("Control", "ChatGPT")
+)
+m_exp_graph <- ggplot(DT2, aes(x= treatment, y = response_rate, label = response_rate)) +
+  geom_col(fill="tomato2") +
+  ylab("Response rate %") +
+  xlab("") +
+  ggtitle("Main Experiment") +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  ylim(0,40)
+```
+
+```{r, include=TRUE, echo=FALSE, fig.height=3.5, fig.cap= NULL, fig.pos='!b',fig.cap="\\label{fig:figs}Response Rates by Experiment"}
+p_exp_graph | m_exp_graph
+```
+
 
 
