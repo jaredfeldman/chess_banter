@@ -9,6 +9,7 @@ output:
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
+  - \usepackage{wrapfig}
 #output: github_document
 ---
 
@@ -46,7 +47,6 @@ inline_reference <- "r inline_reference"
 ```{r, child='./abstract.Rmd'}
 ```
 
-\newpage
 
 ```{r, child='./introduction.Rmd'}
 ```
