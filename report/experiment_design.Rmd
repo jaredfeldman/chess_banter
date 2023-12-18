@@ -1,0 +1,84 @@
+
+
+# Experiment Design
+
+## Overview
+
+In this project, we created a chess bot by harnessing the power of the Maia neural network ("Maia")\footnote{Anderson, Carol Elaine, and Richard Joseph Durbin. “Chapter Four, Rigging the Rules.” One Person, No Vote How Voter Suppression Is Destroying Our Democracy, Bloomsbury Publishing, New York, NY, 2019.} as detailed in "The human side of AI for chess" by Microsoft Research. Our approach involved conducting two experiments. The first served as a preliminary exploration, identifying potential outcome variables that would be crucial in our subsequent experiment. For the second experiment, we integrated the OpenAI API ("ChatGPT") to facilitate more dynamic conversations.
+
+To test our hypothesis and answer the proposed research question, we turn to online chess platform lichess.org, which has an extensive, open source api. The lichess.org api contains a board interaction protocol that was designed for third party programmers to conduct an entire chess game through the lichess website. For our purposes, this provides the perfect vehicle to automate our study and analyses entirely through programming. 
+
+In order to provide the most equal and consistent chess games between all subjects, we utilize a chess engine to decide the moves returned to the opponent. One downside of utilizing a chess engine is they are mostly designed to play the best moves and are not particularly good at playing like a human. To overcome this, we leverage the Maia neural network via a chess engine. Maia was designed specifically to play human-like at certain skill levels and even to make mistakes and blunders, just like an average chess player.
+To measure potential outcomes, we will use a between-subjects experiment design and compare our opponents move performance, game results (i.e. wins and losses), and opponent distraction measurables, such as average move time. Move performance will be measured by the Lichess Accuracy metric where an accuracy of 0% means the opponent only played terrible moves and 100% means the opponent played all the preferred moves of Stockfish, a very strong chess engine not to be confused with the Maia neural network. The comparisons will be made across our different groups consisting of a control group, a treatment group, and a placebo group for our preliminary experiment. And for our final experiment, we will compare across a control group and treatment group.
+
+## Randomization Process and Recruitment
+
+### Lichess Randomization and Recruitment
+
+Lichess uses a popular rating method called Glicko-2, which uses confidence intervals when calculating ratings for players (https://lichess.org/faq#ratings). When players first start on Lichess, the rating starts at 1500 +/- 1000. As players play more rated games, their rating changes and the confidence interval decreases. 
+
+Lichess’s game matchmaking feature allows a player to find a game against an opponent who also wants to play at the same time.  Players queue to play and it takes up to 30 seconds to find an opponent.  The opponent’s rating will be within about +/- 100 rating of the player’s rating.  Lichess uses a combination of a player’s ratings and confidence intervals to pair with similar players so that it will be a fair game.  Since we are playing at an average ‘1500’ rating level, the opponent is essentially random to our experiment.  Whichever players are matched against us will be included in our study.  
+
+Each of the bots that we used were identical, and trained to play at a 1500 Glicko-2 rating level. We relied on Lichess’s randomization strategy to pair us with similarly ranked players. This allowed us to control for different player skill levels while conducting our experiment.
+
+### Experimental Randomization
+
+To randomize treatment group assignment, we employed the python function ‘randint()’ from the ‘random’ library.  This function returns an essentially random integer from a specified range.  The range that was specified on the number of experimental groups.  Our python script would then perform treatment based on the selected integer.
+
+```{r read_data, include=FALSE}
+exp_data_gpt <- fread('../data/exp_data_gpt.csv')
+#exp_data_gpt <- exp_data_gpt[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353')]
+exp_data_gpt <- exp_data_gpt[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353', 'bcu_555')]
+
+```
+
+```{r plot 2 opp_rating by chat_type, include = FALSE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
+gpt_chart <- ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Opponent Rating by Chat Type",
+       x = "Opponent Rating", y = "Density") +
+  scale_color_manual(values = c("red", "blue"),
+                     labels = c("Treatment", "Control"),
+                     name = "Treatment Type") +
+  theme_minimal()
+
+```
+
+```{r plot 2, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Ranking Across Treatment Groups"}
+gpt_chart | gpt_chart
+```
+
+
+## Control and Treatment Variants
+
+The experiment is a between subjects experiment that consists of playing 10-minute rapid ranked games to observe the effects of a chat (treatment) on the subjects. The design consists of a preliminary experiment using predefined phrases from a script followed by the main experiment which uses ChatGPT to engage the subject with questions.
+
+### Preliminary Experiment
+
+The preliminary experiment presents three conditions.
+
+1. The control group receives no chat messages during game play.
+2. The placebo group is administered chats from a fixed script that states random facts during pre-defined moves throughout game play. For example:
+    + Move 3 - hello!
+    + Move 6 - Bananas are berries
+    + Move 9 - I like swimming
+3. The treatment group is administered chats also from a fixed script but the chats are designed to create a sense of friendly rivalry. For example:
+    + Move 6 - I’m going to take your queen in 4 moves.
+    + Move 18 - Things aren’t looking good.
+
+### Main Experiment
+
+The main experiment uses the ChatGPT API for the chat treatment and has the following two conditions:
+
+1. The control group receives no chat messages during game play.
+2. The treatment (ChatGPT group) begins with a fixed start script to initiate conversations with the subject, and once the subject responds to the fixed script, the ChatGPT AI (chat bot) takes control of the chats.
+
+The chat bot has been prompted to keep responses short, to one sentence, and relevant. The chat bot is also given instructions to be lighthearted, not rude, not use profanity, empathetic, polite, and generally tries to make people smile. To give the chat bot some depth, we also prompted the chat bot to be Magnus Carlson’s young cousin living in Boston who is really fond of pineapple on pizza.
+
+### Compliance concerns
+
+Both experiments raised notable compliance concerns. One significant issue was the potential for an opponent to manually "mute" the chat, rendering us unaware of whether the subject was still receiving treatment. To assess compliance, our approach involved cross-referencing the logs to confirm opponent responses. However, it's crucial to acknowledge the limitations of this method, as an opponent could still "mute" after providing an initial response.
+
+Another factor influencing treatment compliance stems from the global nature of the game, encompassing participants worldwide. In cases where subjects do not speak English, a lack of response may not necessarily indicate non-compliance; rather, it could be attributed to language barriers.
+
+

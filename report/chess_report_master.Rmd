@@ -22,7 +22,7 @@ knitr::knit_engines$set(problem_description = function(options) {
 
 ```{r load packages, warning=FALSE, message=FALSE}
 library(data.table)
-library(gt)
+#library(gt)
 
 library(sandwich)
 library(lmtest)
@@ -52,9 +52,6 @@ inline_reference <- "r inline_reference"
 ```
 
 
-```{r, child='./methodology.Rmd'}
+```{r, child='./experiment_design.Rmd'}
 ```
 
-
-```{r, child='./results_and_discussion.Rmd'}
-```

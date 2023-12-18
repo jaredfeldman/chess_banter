@@ -8,4 +8,8 @@ There is limited research around the impact that banter, trash-talking, or even 
 
 Studies have found that online trash-talking has become normalized (Beres et al. 2021), even though it could have a negative impact on the recipient. We hope that our research will shed light on banter’s perceived impact on game play, and curb behaviors towards a less toxic online gaming environment.
 
-## Ethical and Privacy Considerations
+## Hypothesis
+Our null hypothesis is defined as follows: Engaging in online chess chat is unlikely to influence the playing accuracy of opponents.
+
+We posit that encountering a text designed to provoke a challenge from an opponent may create a sense of perceived rivalry, ultimately enhancing their gameplay accuracy and performance.
+
