@@ -19,9 +19,11 @@ inline_reference <- "r inline_reference"
 # Analysis
 
 ## Intent to Treat (ITT) Effect
-Our first step in evaluating the outcomes of our experiments is to estimate the Intent to Treat ($ITT$). The $ITT$ measures the outcomes of our experiment based on treatment assignment, without considering compliance rate. The $ITT$ can be calculated as:
+Our first step in evaluating the outcomes of our experiments is to estimate the Intent to Treat ($ITT$). The $ITT$ measures the outcomes of our experiment based on treatment assignment, without considering compliance rate. The $ITT$ is defined as:
 
-$ITT$ = $E[Y_i(z = 1)] - E[Y_i(z = 0)]$
+\begin{quote}
+  \textit{$ITT$ = $E[Y_i(z = 1)] - E[Y_i(z = 0)]$}
+\end{quote}
 
 where z signifies the assignment of the subject. Below shows the ITT across six of our ten 10 different outcome variables for each experiment. The table containing all ten outcomes can be found in the Appendix.
 
@@ -212,7 +214,9 @@ p_exp_graph | m_exp_graph
 
 The $CACE$ is calculated using the following formula:
 
-$CACE$ = $ITT$/$ITT_d$
+\begin{quote}
+  \textit{$CACE$ = $ITT$/$ITT_d$}
+\end{quote}
 
 where $ITT_d$ is the proportion of compliers in the treatment group (the “take-up rate”). In our case, we can see above that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
 
@@ -330,64 +334,15 @@ stargazer(cace_main_models,
 ```
 
 ## Benjamini-Hochberg (BH) Procedure
-Since we performed nine statistical tests, we have an increased probability of finding a $p$ value less than or equal to 0.05 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
+While some test results in the tables above show statistical significance at the 0.1 $p$ value threshold, we need to adjust due to the number of tests that we conducted. Since we performed ten statistical tests, we have an increased chance of finding a $p$ value less than or equal to 0.1 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control for the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
 
-In this method, we take the $p$ values from each of our $CACE$ outcomes and conduct the BH procedure. As seen below, when correcting for a potential FDR, none of our $p$ values are statistically significant.
+In this method, we take the $p$ values from each of our $CACE$ outcomes and compare them to their associated $BH_{critical}$ value. The $BH_{critical}$ value is defined as:
 
-```{r cace p-values}
-# extract p_values and assign to variables for Benjamini & Hochberg adjustment
-cace_prelim_win_p            <- summary(cace_prelim_win)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_maia_mate_p      <- summary(cace_prelim_maia_mate)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_opp_mate_p       <- summary(cace_prelim_opp_mate)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_opp_resign_p     <- summary(cace_prelim_opp_resign)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_draw_p           <- summary(cace_prelim_draw)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_opp_acc_p        <- summary(cace_prelim_opp_acc)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_opp_blunders_p   <- summary(cace_prelim_opp_blunders)$coefficients["predicted_compliance", "Pr(>|t|)"] 
-cace_prelim_opp_mistakes_p   <- summary(cace_prelim_opp_mistakes)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_opp_acpl_p       <- summary(cace_prelim_opp_acpl)$coefficients["predicted_compliance", "Pr(>|t|)"]
-cace_prelim_opp_move_time_p  <- summary(cace_prelim_opp_move_time)$coefficients["predicted_compliance", "Pr(>|t|)"]
+\begin{quote}
+  \textit{$BH_{critical}$ = ($i$/$m$) $*$ $Q$}
+\end{quote}
 
-```
+where $i$ is the rank of the $p$ value (i.e., the smallest value has $i=1$, etc.), $m$ is is the number of $p$ values (i.e., ten), and $Q$ is the allowable FDR (i.e., 0.05). In this test, if a $p$ value is less than its $BH_{critical}$ value, then the test is significant. Otherwise, the $p$ values that we found are likely the result of a false discovery.
 
-```{r BH adjustment, include=TRUE, echo=FALSE}
-# grab the p-values for each CACE
-cace_prelim_p_values <- c(cace_prelim_win_p,
-                  cace_prelim_maia_mate_p,
-                  cace_prelim_opp_mate_p,
-                  cace_prelim_opp_resign_p,
-                  cace_prelim_draw_p,
-                  cace_prelim_opp_acc_p,
-                  cace_prelim_opp_blunders_p,
-                  cace_prelim_opp_mistakes_p,
-                  cace_prelim_opp_acpl_p,
-                  cace_prelim_opp_move_time_p)
-
-# sort from smallest to largest p-values
-cace_p_values_sorted <- sort(cace_prelim_p_values)
-
-```
-
-```{r, include=TRUE, echo=FALSE}
-# sort the p-values from our CACE
-adjusted_bh_ps <- p.adjust(cace_p_values_sorted, method = "BH")
-
-# create a data frame for better formatting
-bh_results <- data.frame(
-  original_p_value = cace_p_values_sorted,
-  adjusted_p_value = adjusted_bh_ps
-)
-
-# display the adjusted p-values
-gt::gt(bh_results) %>%
-  gt::tab_spanner(
-    label = "P-Values Before and After BH",
-    columns = c('original_p_value', 'adjusted_p_value')
-  ) %>%
-  gt::fmt_number(
-    columns = vars('original_p_value', 'adjusted_p_value'),
-    decimals = 3
-  )
-```
-
-
+In both our Preliminary Experiment and Main Experiment, there were zero $p$ values less than their associated $BH_{critical}$ value, and thus we fail to reject the null hypothesis under both experiment conditions.
 
