@@ -55,3 +55,7 @@ inline_reference <- "r inline_reference"
 ```{r, child='./experiment_design.Rmd'}
 ```
 
+
+```{r, child='./analysis.Rmd'}
+```
+

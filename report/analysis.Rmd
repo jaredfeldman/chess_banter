@@ -1,0 +1,393 @@
+```{r , warning=FALSE, message=FALSE, echo=FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(ggplot2)
+library(patchwork)
+
+library(foreign)
+
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(stargazer)
+inline_reference <- "r inline_reference"
+```
+
+# Analysis
+
+## Intent to Treat (ITT) Effect
+Our first step in evaluating the outcomes of our experiments is to estimate the Intent to Treat ($ITT$). The $ITT$ measures the outcomes of our experiment based on treatment assignment, without considering compliance rate. The $ITT$ can be calculated as:
+
+$ITT$ = $E[Y_i(z = 1)] - E[Y_i(z = 0)]$
+
+where z signifies the assignment of the subject. Below shows the ITT across six of our ten 10 different outcome variables for each experiment. The table containing all ten outcomes can be found in the Appendix.
+
+```{r, include=FALSE}
+exp_data      <- fread('../data/exp_data.csv')
+exp_data_main <- fread('../data/exp_data_gpt.csv')
+exp_data_main <- exp_data_main[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353', 'bcu_555')]
+
+```
+
+```{r feature engineer, include=FALSE}
+# one-hot encode maia win
+exp_data[ , maia_win := ifelse(winner == 'maia', 1, 0)]
+exp_data_main[ , maia_win := ifelse(winner == 'maia', 1, 0)]
+
+# one-hot encode maia checkmate
+exp_data[ , maia_checkmate := ifelse(winner == 'maia' & status == 'mate', 1, 0)]
+exp_data_main[ , maia_checkmate := ifelse(winner == 'maia' & status == 'mate', 1, 0)]
+
+# one-hot encode opp checkmate
+exp_data[ , opp_checkmate := ifelse(winner == 'opp' & status == 'mate', 1, 0)]
+exp_data_main[ , opp_checkmate := ifelse(winner == 'opp' & status == 'mate', 1, 0)]
+
+# one-hot encode opp resign
+exp_data[ , opp_resign := ifelse(winner == 'maia' & status == 'resign', 1, 0)]
+exp_data_main[ , opp_resign := ifelse(winner == 'maia' & status == 'resign', 1, 0)]
+
+# one-hot encode draw
+exp_data[ , draw := ifelse(status == 'draw', 1, 0)]
+exp_data_main[ , draw := ifelse(status == 'draw', 1, 0)]
+
+# one-hot encode treatment
+exp_data[ , treat := ifelse(chat_type == 'Chatty', 1, 0)]
+exp_data_main[ , treat := ifelse(chat_type == 'ChatGPT', 1, 0)]
+
+```
+
+
+```{r define measures, include=FALSE}
+# define the outcome metrics for stargazers
+measures <- c("Maia Win",
+              #"Maia Checkmate",
+              #"Opp Checkmate",
+              "Opp Resigns",
+              #"Draw",
+              "Opp Acc",
+              "Opp Blunders",
+              "Opp Mistakes",
+              #"Opp ACPL",
+              "Opp Avg Mv Time")
+```
+
+
+```{r ITT calc exp1 TvC, echo=FALSE,include=FALSE}
+exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
+
+# only include rows where respond != NA
+exp_data_c_t <- exp_data_c_t[complete.cases(exp_data_c_t$respond), ]
+
+itt_prelim_win           <- exp_data_c_t[ , lm(maia_win ~ treat)]
+itt_prelim_maia_mate     <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
+itt_prelim_opp_mate      <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
+itt_prelim_opp_resign    <- exp_data_c_t[ , lm(opp_resign ~ treat)]
+itt_prelim_draw          <- exp_data_c_t[ , lm(draw ~ treat)]
+itt_prelim_opp_acc       <- exp_data_c_t[ , lm(opp_acc ~ treat)]
+itt_prelim_opp_blunders  <- exp_data_c_t[ , lm(opp_blunders ~ treat)]
+itt_prelim_opp_mistakes  <- exp_data_c_t[ , lm(opp_mistakes ~ treat)]
+itt_prelim_opp_acpl      <- exp_data_c_t[ , lm(opp_acpl ~ treat)]
+itt_prelim_opp_move_time <- exp_data_c_t[ , lm(opp_avg_move_time ~ treat)]
+
+# add robust standard errors
+
+itt_prelim_win_rse           <- coeftest(itt_prelim_win, vcov = vcovHC)
+itt_prelim_maia_mate_rse     <- coeftest(itt_prelim_maia_mate, vcov = vcovHC)
+itt_prelim_opp_mate_rse      <- coeftest(itt_prelim_opp_mate, vcov = vcovHC)
+itt_prelim_opp_resign_rse    <- coeftest(itt_prelim_opp_resign, vcov = vcovHC)
+itt_prelim_draw_rse          <- coeftest(itt_prelim_draw, vcov = vcovHC)
+itt_prelim_opp_acc_rse       <- coeftest(itt_prelim_opp_acc, vcov = vcovHC)
+itt_prelim_opp_blunders_rse  <- coeftest(itt_prelim_opp_blunders, vcov = vcovHC)
+itt_prelim_opp_mistakes_rse  <- coeftest(itt_prelim_opp_mistakes, vcov = vcovHC)
+itt_prelim_opp_acpl_rse      <- coeftest(itt_prelim_opp_acpl, vcov = vcovHC)
+itt_prelim_opp_move_time_rse <- coeftest(itt_prelim_opp_move_time, vcov = vcovHC)
+
+itt_prelim_models <- list(itt_prelim_win_rse,
+                       itt_prelim_opp_resign_rse,
+                       itt_prelim_opp_acc_rse,
+                       itt_prelim_opp_blunders_rse,
+                       itt_prelim_opp_mistakes_rse,
+                       itt_prelim_opp_move_time_rse)
+
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
+stargazer(itt_prelim_models,
+          type = 'latex',
+          header = FALSE,          
+          dep.var.labels = 'Outcome Variables',
+          column.labels = measures,
+          covariate.labels = "Treatment")
+```
+
+
+```{r, echo=FALSE,include=FALSE}
+exp_data_main[chat_type %in% c("ChatGPT", "Control GPT") , ]
+
+# only include rows where respond != NA
+exp_data_main <- exp_data_main[complete.cases(exp_data_main$respond), ]
+
+itt_main_win           <- exp_data_main[ , lm(maia_win ~ treat)]
+itt_main_maia_mate     <- exp_data_main[ , lm(maia_checkmate ~ treat)]
+itt_main_opp_mate      <- exp_data_main[ , lm(opp_checkmate ~ treat)]
+itt_main_opp_resign    <- exp_data_main[ , lm(opp_resign ~ treat)]
+itt_main_draw          <- exp_data_main[ , lm(draw ~ treat)]
+itt_main_opp_acc       <- exp_data_main[ , lm(opp_acc ~ treat)]
+itt_main_opp_blunders  <- exp_data_main[ , lm(opp_blunders ~ treat)]
+itt_main_opp_mistakes  <- exp_data_main[ , lm(opp_mistakes ~ treat)]
+itt_main_opp_acpl      <- exp_data_main[ , lm(opp_acpl ~ treat)]
+itt_main_opp_move_time <- exp_data_main[ , lm(opp_avg_move_time ~ treat)]
+
+# add robust standard errors
+
+itt_main_win_rse           <- coeftest(itt_main_win, vcov = vcovHC)
+itt_main_maia_mate_rse     <- coeftest(itt_main_maia_mate, vcov = vcovHC)
+itt_main_opp_mate_rse      <- coeftest(itt_main_opp_mate, vcov = vcovHC)
+itt_main_opp_resign_rse    <- coeftest(itt_main_opp_resign, vcov = vcovHC)
+itt_main_draw_rse          <- coeftest(itt_main_draw, vcov = vcovHC)
+itt_main_opp_acc_rse       <- coeftest(itt_main_opp_acc, vcov = vcovHC)
+itt_main_opp_blunders_rse  <- coeftest(itt_main_opp_blunders, vcov = vcovHC)
+itt_main_opp_mistakes_rse  <- coeftest(itt_main_opp_mistakes, vcov = vcovHC)
+itt_main_opp_acpl_rse      <- coeftest(itt_main_opp_acpl, vcov = vcovHC)
+itt_main_opp_move_time_rse <- coeftest(itt_main_opp_move_time, vcov = vcovHC)
+
+itt_main_models <- list(itt_main_win_rse,
+                        itt_main_opp_resign_rse,
+                        itt_main_opp_acc_rse,
+                        itt_main_opp_blunders_rse,
+                        itt_main_opp_mistakes_rse,
+                        itt_main_opp_move_time_rse)
+
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
+stargazer(itt_main_models,
+          type = 'latex',
+          header = FALSE,
+          dep.var.labels = 'Outcome Variables',
+          column.labels = measures,
+          covariate.labels = "Treatment")
+
+```
+
+## Non-compliance
+In our experiment, we only tested for one-sided compliance. In particular, we tested whether someone was intended to receive treatment, but did not engage in the chat room. Conversely, our bot was not programmed to engage with opponents if they chatted first, so we did not have concerns of non-compliance where someone may have been targeted for control, but instead received treatment.
+
+
+## Complier Average Causal Effect (CACE)
+While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. As seen below, not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
+
+
+```{r, include = FALSE}
+DT1 = data.table(
+  response_rate = c(4.5, 35.5, 30.1),
+  treatment = c("Control", "Placebo", "Treatment")
+)
+p_exp_graph <- ggplot(DT1, aes(x= treatment, y = response_rate, label = response_rate)) +
+  geom_col(fill="royalblue3") +
+  ylab("Response rate %") +
+  xlab("") +
+  ggtitle("Preliminary Experiment") +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  ylim(0,40)
+DT2 = data.table(
+  response_rate = c(.45, 33.2),
+  treatment = c("Control", "ChatGPT")
+)
+m_exp_graph <- ggplot(DT2, aes(x= treatment, y = response_rate, label = response_rate)) +
+  geom_col(fill="tomato2") +
+  ylab("Response rate %") +
+  xlab("") +
+  ggtitle("Main Experiment") +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  ylim(0,40)
+```
+
+```{r, include=TRUE, echo=FALSE, fig.height=3.5, fig.cap= NULL, fig.pos='!b',fig.cap="\\label{fig:figs}Response Rates by Experiment"}
+p_exp_graph | m_exp_graph
+```
+
+The $CACE$ is calculated using the following formula:
+
+$CACE$ = $ITT$/$ITT_d$
+
+where $ITT_d$ is the proportion of compliers in the treatment group (the “take-up rate”). In our case, we can see above that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
+
+```{r cace function, echo=FALSE, include=FALSE}
+# define function to calculate cace
+get_cace <- function(data, treat_var, compliance_var, outcome_var) {
+  # first stage regression
+  first_stage <- lm(paste(compliance_var, "~", treat_var), data = data)
+  
+  # extract predicted values of compliance from the first stage
+  predicted_compliance <- predict(first_stage)
+  
+  # create a new data frame with the predicted compliance values
+  data_with_predicted <- cbind(data, predicted_compliance)
+  
+  # Second stage regression
+  cace_model <- lm(paste(outcome_var, "~ predicted_compliance"), data = data_with_predicted)
+  
+  # Obtain summary statistics for the CACE model
+  cace_model
+}
+
+```
+
+```{r cace calc exp1}
+cace_prelim_win               <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
+cace_prelim_maia_mate         <- get_cace(exp_data_c_t, "treat", "respond", "maia_checkmate")
+cace_prelim_opp_mate          <- get_cace(exp_data_c_t, "treat", "respond", "opp_checkmate")
+cace_prelim_opp_resign        <- get_cace(exp_data_c_t, "treat", "respond", "opp_resign")
+cace_prelim_draw              <- get_cace(exp_data_c_t, "treat", "respond", "draw")
+cace_prelim_opp_acc           <- get_cace(exp_data_c_t, "treat", "respond", "opp_acc")
+cace_prelim_opp_blunders      <- get_cace(exp_data_c_t, "treat", "respond", "opp_blunders")
+cace_prelim_opp_mistakes      <- get_cace(exp_data_c_t, "treat", "respond", "opp_mistakes")
+cace_prelim_opp_acpl          <- get_cace(exp_data_c_t, "treat", "respond", "opp_acpl")
+cace_prelim_opp_move_time     <- get_cace(exp_data_c_t, "treat", "respond", "opp_avg_move_time")
+
+# add robust standard errors
+
+cace_prelim_win_rse           <- coeftest(cace_prelim_win, vcov = vcovHC)
+cace_prelim_maia_mate_rse     <- coeftest(cace_prelim_maia_mate, vcov = vcovHC)
+cace_prelim_opp_mate_rse      <- coeftest(cace_prelim_opp_mate, vcov = vcovHC)
+cace_prelim_opp_resign_rse    <- coeftest(cace_prelim_opp_resign, vcov = vcovHC)
+cace_prelim_draw_rse          <- coeftest(cace_prelim_draw, vcov = vcovHC)
+cace_prelim_opp_acc_rse       <- coeftest(cace_prelim_opp_acc, vcov = vcovHC)
+cace_prelim_opp_blunders_rse  <- coeftest(cace_prelim_opp_blunders, vcov = vcovHC)
+cace_prelim_opp_mistakes_rse  <- coeftest(cace_prelim_opp_mistakes, vcov = vcovHC)
+cace_prelim_opp_acpl_rse      <- coeftest(cace_prelim_opp_acpl, vcov = vcovHC)
+cace_prelim_opp_move_time_rse <- coeftest(cace_prelim_opp_move_time, vcov = vcovHC)
+
+cace_prelim_models <- list(cace_prelim_win_rse,
+                    cace_prelim_opp_resign_rse,
+                    cace_prelim_opp_acc_rse,
+                    cace_prelim_opp_blunders_rse,
+                    cace_prelim_opp_mistakes_rse,
+                    cace_prelim_opp_move_time_rse
+                    )
+```
+
+```{r, include=TRUE, results='asis', echo=FALSE, warning=FALSE}
+
+stargazer(cace_prelim_models,
+          dep.var.labels = 'Outcome Variables',
+          column.labels = measures,
+          covariate.labels = "Treatment",
+          type = 'latex',
+          header = FALSE)
+     
+```
+
+```{r cace calc exp2}
+# remove NAs
+
+cace_main_win               <- get_cace(exp_data_main, "treat", "respond", "maia_win")
+cace_main_maia_mate         <- get_cace(exp_data_main, "treat", "respond", "maia_checkmate")
+cace_main_opp_mate          <- get_cace(exp_data_main, "treat", "respond", "opp_checkmate")
+cace_main_opp_resign        <- get_cace(exp_data_main, "treat", "respond", "opp_resign")
+cace_main_draw              <- get_cace(exp_data_main, "treat", "respond", "draw")
+cace_main_opp_acc           <- get_cace(exp_data_main, "treat", "respond", "opp_acc")
+cace_main_opp_blunders      <- get_cace(exp_data_main, "treat", "respond", "opp_blunders")
+cace_main_opp_mistakes      <- get_cace(exp_data_main, "treat", "respond", "opp_mistakes")
+cace_main_opp_acpl          <- get_cace(exp_data_main, "treat", "respond", "opp_acpl")
+cace_main_opp_move_time     <- get_cace(exp_data_main, "treat", "respond", "opp_avg_move_time")
+
+# add robust standard errors
+
+cace_main_win_rse           <- coeftest(cace_main_win, vcov = vcovHC)
+cace_main_maia_mate_rse     <- coeftest(cace_main_maia_mate, vcov = vcovHC)
+cace_main_opp_mate_rse      <- coeftest(cace_main_opp_mate, vcov = vcovHC)
+cace_main_opp_resign_rse    <- coeftest(cace_main_opp_resign, vcov = vcovHC)
+cace_main_draw_rse          <- coeftest(cace_main_draw, vcov = vcovHC)
+cace_main_opp_acc_rse       <- coeftest(cace_main_opp_acc, vcov = vcovHC)
+cace_main_opp_blunders_rse  <- coeftest(cace_main_opp_blunders, vcov = vcovHC)
+cace_main_opp_mistakes_rse  <- coeftest(cace_main_opp_mistakes, vcov = vcovHC)
+cace_main_opp_acpl_rse      <- coeftest(cace_main_opp_acpl, vcov = vcovHC)
+cace_main_opp_move_time_rse <- coeftest(cace_main_opp_move_time, vcov = vcovHC)
+
+cace_main_models <- list(cace_main_win_rse,
+                    cace_main_opp_resign_rse,
+                    cace_main_opp_acc_rse,
+                    cace_main_opp_blunders_rse,
+                    cace_main_opp_mistakes_rse,
+                    cace_main_opp_move_time_rse
+                    )
+```
+
+```{r, include=TRUE, results='asis', echo=FALSE, warning=FALSE}
+
+stargazer(cace_main_models,
+          dep.var.labels = 'Outcome Variables',
+          column.labels = measures,
+          covariate.labels = "Treatment",
+          type = 'latex',
+          header = FALSE)
+     
+```
+
+## Benjamini-Hochberg (BH) Procedure
+Since we performed nine statistical tests, we have an increased probability of finding a $p$ value less than or equal to 0.05 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
+
+In this method, we take the $p$ values from each of our $CACE$ outcomes and conduct the BH procedure. As seen below, when correcting for a potential FDR, none of our $p$ values are statistically significant.
+
+```{r cace p-values}
+# extract p_values and assign to variables for Benjamini & Hochberg adjustment
+cace_prelim_win_p            <- summary(cace_prelim_win)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_maia_mate_p      <- summary(cace_prelim_maia_mate)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_opp_mate_p       <- summary(cace_prelim_opp_mate)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_opp_resign_p     <- summary(cace_prelim_opp_resign)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_draw_p           <- summary(cace_prelim_draw)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_opp_acc_p        <- summary(cace_prelim_opp_acc)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_opp_blunders_p   <- summary(cace_prelim_opp_blunders)$coefficients["predicted_compliance", "Pr(>|t|)"] 
+cace_prelim_opp_mistakes_p   <- summary(cace_prelim_opp_mistakes)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_opp_acpl_p       <- summary(cace_prelim_opp_acpl)$coefficients["predicted_compliance", "Pr(>|t|)"]
+cace_prelim_opp_move_time_p  <- summary(cace_prelim_opp_move_time)$coefficients["predicted_compliance", "Pr(>|t|)"]
+
+```
+
+```{r BH adjustment, include=TRUE, echo=FALSE}
+# grab the p-values for each CACE
+cace_prelim_p_values <- c(cace_prelim_win_p,
+                  cace_prelim_maia_mate_p,
+                  cace_prelim_opp_mate_p,
+                  cace_prelim_opp_resign_p,
+                  cace_prelim_draw_p,
+                  cace_prelim_opp_acc_p,
+                  cace_prelim_opp_blunders_p,
+                  cace_prelim_opp_mistakes_p,
+                  cace_prelim_opp_acpl_p,
+                  cace_prelim_opp_move_time_p)
+
+# sort from smallest to largest p-values
+cace_p_values_sorted <- sort(cace_prelim_p_values)
+
+```
+
+```{r, include=TRUE, echo=FALSE}
+# sort the p-values from our CACE
+adjusted_bh_ps <- p.adjust(cace_p_values_sorted, method = "BH")
+
+# create a data frame for better formatting
+bh_results <- data.frame(
+  original_p_value = cace_p_values_sorted,
+  adjusted_p_value = adjusted_bh_ps
+)
+
+# display the adjusted p-values
+gt::gt(bh_results) %>%
+  gt::tab_spanner(
+    label = "P-Values Before and After BH",
+    columns = c('original_p_value', 'adjusted_p_value')
+  ) %>%
+  gt::fmt_number(
+    columns = vars('original_p_value', 'adjusted_p_value'),
+    decimals = 3
+  )
+```
+
+
+
