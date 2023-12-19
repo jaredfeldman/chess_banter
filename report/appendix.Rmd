@@ -32,10 +32,9 @@ You are Magnus Carlsen's young cousin living in Boston. You hate playing chess o
 
 
 ## Appendix C: Screenshots
+![Results - Preliminary Experiment: Placebo](./prelimExpPlacebo.png)
+![Results - Preliminary Experiment: Treatment](./prelimExpTreatment.png)
 
-
-
-
-
+![Results - Main Experiment: ChatGPT](./mainExpChatgpt.png)
 
 
