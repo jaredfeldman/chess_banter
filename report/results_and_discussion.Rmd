@@ -432,5 +432,7 @@ gt::gt(bh_results) %>%
   )
 ```
 
+## Summary of Results
 
+Given the results and analysis of our experimentation, we fail to reject the null hypothesis that online chess player’s performance is directly impacted when analyzing performance measures such as move accuracy, blunders, & mistakes, as well as game outcomes in regards to wins and losses. Notably, we did, expectedly, observe an effect on players who were treated to conversations with ChatGPT where those players' average move time increased by <5.8 seconds> which over the course of a 35+ move game could add up. However, this effect is not statistically significant with a p-value of (pvalue) and given the Benjamini-Hochberg (BH) Procedure, the significance is further diluted.
 
