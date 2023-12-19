@@ -29,6 +29,8 @@ Each of the bots that we used were identical, and trained to play at a 1500 Glic
 
 To randomize treatment group assignment, we employed the python function `randint()` from the `random` library.  This function returns a random integer from a specified range. The range that was specified on the number of experimental groups. Our python script would then perform treatment based on the selected integer.
 
+Following both Lichess randomization and experimental randomization, we found that there was no significant difference between the ratings in each of the experimental groups (visually represented in Figure 1 below). This was necessary to check because differently rated players may have different innate playing metrics. 
+
 ```{r read_data, include=FALSE}
 exp_data_gpt <- fread('../data/exp_data_gpt.csv')
 #exp_data_gpt <- exp_data_gpt[maia_name %in% c('chess4gerry', 'ucb_123', 'sandman353')]
@@ -64,7 +66,7 @@ gpt_chart <- ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))
 ```{r plot 2, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Rating Across Treatment Groups"}
 prelim_chart | gpt_chart
 ```
-Following both Lichess randomization and experimental randomization, we found that there was no significant difference between the ratings in each of the experimental groups (visually represented in Figure 1 above). This was necessary to check because differently rated players may have different innate playing metrics.  
+ 
 
 ## Control and Treatment Variants
 
