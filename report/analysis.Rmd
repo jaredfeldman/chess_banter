@@ -206,16 +206,16 @@ get_cace <- function(data, treat_var, compliance_var, outcome_var) {
 get_cace_stargazer <- function(d, table_name) {
   
   
-  maia_win    <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
+  maia_win    <- get_cace(d, "treat", "respond", "maia_win")
   #cace_prelim_maia_mate         <- get_cace(exp_data_c_t, "treat", "respond", "maia_checkmate")
   #cace_prelim_opp_mate          <- get_cace(exp_data_c_t, "treat", "respond", "opp_checkmate")
-  opp_resign  <- get_cace(exp_data_c_t, "treat", "respond", "opp_resign")
+  opp_resign  <- get_cace(d, "treat", "respond", "opp_resign")
   #cace_prelim_draw              <- get_cace(exp_data_c_t, "treat", "respond", "draw")
-  opp_acc     <- get_cace(exp_data_c_t, "treat", "respond", "opp_acc")
-  blunders    <- get_cace(exp_data_c_t, "treat", "respond", "opp_blunders")
-  mistakes    <- get_cace(exp_data_c_t, "treat", "respond", "opp_mistakes")
+  opp_acc     <- get_cace(d, "treat", "respond", "opp_acc")
+  blunders    <- get_cace(d, "treat", "respond", "opp_blunders")
+  mistakes    <- get_cace(d, "treat", "respond", "opp_mistakes")
   #cace_prelim_opp_acpl          <- get_cace(exp_data_c_t, "treat", "respond", "opp_acpl")
-  move_time   <- get_cace(exp_data_c_t, "treat", "respond", "opp_avg_move_time")
+  move_time   <- get_cace(d, "treat", "respond", "opp_avg_move_time")
   
   
   stargazer(maia_win, 
