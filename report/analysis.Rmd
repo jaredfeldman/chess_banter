@@ -182,7 +182,7 @@ An issue with our complier labeling is that opponents can mute at anytime during
 
 ## Complier Average Causal Effect (CACE)
 
-While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. As seen below, not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
+While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. In Figure 4, we can see not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
 
 ```{r, include = FALSE}
 DT1 = data.table(
@@ -220,7 +220,9 @@ The $CACE$ is calculated using the following formula:
   \textit{$CACE$ = $ITT$/$ITT_d$}
 \end{quote}
 ```
-where $ITT_d$ is the proportion of compliers in the treatment group (the "take-up rate"). In our case, we can see above that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
+where $ITT_d$ is the proportion of compliers in the treatment group (the "take-up rate"). In our case, we can see in Figure 4 that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
+
+Now we will run the same regression analysis, but this time we will adjust our effects by predicting outcomes based on the CACE methods described above. In Table 3, for our preliminary experiment we see a slight effect on Opponent resignations and small uptick in Opponent Mistakes with a $p$ value < .1. In Table 4 for our Main Experiment, we see no statistical significance for outcomes except on Opponent Average Move Time being up more than 5.8 seconds over those in the control group. 
 
 ```{r cace function, echo=FALSE, include=FALSE}
 # define function to calculate cace
@@ -280,6 +282,7 @@ get_cace_stargazer <- function(d, table_name) {
 get_cace_stargazer(exp_data_c_t, 'Preliminary Experiment: CACE')
 get_cace_stargazer(exp_data_main, 'Main Experiment: CACE')
 ```
+\newpage
 
 ## Benjamini-Hochberg (BH) Procedure
 
