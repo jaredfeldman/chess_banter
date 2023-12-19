@@ -111,36 +111,3 @@ In our analysis, we determined that we would need roughly 150 samples of each tr
 
 As seen left, for both Experiment 1 and Experiment 2, we were able to achieve our targeted sample size to have at least 80% power.
 
-
-```{r, include = FALSE}
-DT1 = data.table(
-  response_rate = c(4.5, 35.5, 30.1),
-  treatment = c("Control", "Placebo", "Treatment")
-)
-p_exp_graph <- ggplot(DT1, aes(x= treatment, y = response_rate, label = response_rate)) +
-  geom_col(fill="royalblue3") +
-  ylab("Response rate %") +
-  xlab("") +
-  ggtitle("Preliminary Experiment") +
-  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
-  ylim(0,40)
-DT2 = data.table(
-  response_rate = c(.45, 33.2),
-  treatment = c("Control", "ChatGPT")
-)
-m_exp_graph <- ggplot(DT2, aes(x= treatment, y = response_rate, label = response_rate)) +
-  geom_col(fill="tomato2") +
-  ylab("Response rate %") +
-  xlab("") +
-  ggtitle("Main Experiment") +
-  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
-  ylim(0,40)
-```
-
-```{r, include=TRUE, echo=FALSE, fig.height=3.5, fig.cap= NULL, fig.pos='!b',fig.cap="\\label{fig:figs}Response Rates by Experiment"}
-p_exp_graph | m_exp_graph
-```
-
-
-
-

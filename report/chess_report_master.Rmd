@@ -59,3 +59,9 @@ inline_reference <- "r inline_reference"
 ```{r, child='./analysis.Rmd'}
 ```
 
+```{r, child='./Conclusion.Rmd'}
+```
+
+```{r, child='./appendix.Rmd'}
+```
+
