@@ -124,10 +124,6 @@ get_stargazer <- function(d, table_name) {
 
 ```
 
-```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
-get_stargazer(exp_data_c_t, "Prelim itt table1")
-```
-
 
 ```{r, echo=FALSE,include=FALSE}
 exp_data_main[chat_type %in% c("ChatGPT", "Control GPT") , ]
@@ -137,8 +133,38 @@ exp_data_main <- exp_data_main[complete.cases(exp_data_main$respond), ]
 
 ```
 
+```{r}
+prelim_acc_plt <- ggplot(exp_data_c_t, aes(x = opp_acc, color = factor(chat_type))) +
+  geom_density(alpha = 0.5) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  labs(title = "Prelim Experiment Opponent Accuracy", x = "Opponent Accuracy", y = "Density") +
+  scale_color_manual(values = c("red", "blue", "forestgreen"),
+                     labels = c("Treatment", "Control", "Placebo"),
+                     name = "") +
+    theme(legend.key.height= unit(3, 'mm'), legend.key.width= unit(3, 'mm'), legend.position = 'bottom')
+
+main_expt_plt <- ggplot(exp_data_gpt, aes(x = opp_acc, color = factor(chat_type))) +
+  geom_density(alpha = 0.5) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 7)) +
+  labs(title = "Main Experiment Opponent Accuracy", x = "Opponent Accuracy", y = "Density") +
+  scale_color_manual(values = c("red", "blue"),
+                     labels = c("Treatment", "Control"),
+                     name = "") +
+    theme(legend.key.height= unit(3, 'mm'), legend.key.width= unit(3, 'mm'), legend.position = 'bottom')
+```
+```{r plot 3, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Accuracy Across Treatment Groups"}
+prelim_acc_plt | main_expt_plt
+```
+
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
+get_stargazer(exp_data_c_t, "Prelim Experiment")
+```
+
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
-get_stargazer(exp_data_main, "Main Experiment ITT")
+get_stargazer(exp_data_main, "Main Experiment")
 ```
 \newpage
 ## Labeling compliers and non-compliers
@@ -249,8 +275,8 @@ get_cace_stargazer <- function(d, table_name) {
 ```
 
 ```{r, include=TRUE, results='asis', echo=FALSE, warning=FALSE}
-get_cace_stargazer(exp_data_c_t, 'cace prelim table')
-get_cace_stargazer(exp_data_main, 'cace main experiment')
+get_cace_stargazer(exp_data_c_t, 'Preliminary Experiment: CACE')
+get_cace_stargazer(exp_data_main, 'Main Experiment: CACE')
 ```
 
 ## Benjamini-Hochberg (BH) Procedure
