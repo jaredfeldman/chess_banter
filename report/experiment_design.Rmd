@@ -4,26 +4,22 @@
 
 ## Overview
 
-In this project, we created a chess bot by harnessing the power of the Maia neural network ("Maia") as detailed in "The human side of AI for chess" by Microsoft Research[^7]. Our approach involved conducting two experiments. The first served as a preliminary exploration, identifying potential outcome variables that would be crucial in our subsequent experiment. For the second experiment, we integrated the OpenAI API ("ChatGPT") to facilitate more dynamic conversations.
+In this project, we created a chess bot by harnessing the power of the Maia neural network ("Maia") as detailed in "The human side of AI for chess" by Microsoft Research\footnote{Mcllroy-Young et al., 2020 - The human side of AI for chess.}. Our approach involved conducting two experiments. The first served as a preliminary exploration, identifying potential outcome variables that would be crucial in our subsequent experiment. For the second experiment, we integrated the OpenAI API ("ChatGPT") to facilitate more dynamic conversations.
 
 To test our hypothesis and answer the proposed research question, we turn to online chess platform lichess.org, which has an extensive, open source api. The lichess.org api contains a board interaction protocol that was designed for third party programmers to conduct an entire chess game through the Lichess website. For our purposes, this provides the perfect vehicle to automate our study and analyses entirely through programming. 
 
 In order to provide the most equal and consistent chess games between all subjects, we utilize a chess engine to decide the moves returned to the opponent. One downside of utilizing a chess engine is they are mostly designed to play the best moves and are not particularly good at playing like a human. To overcome this, we leverage the Maia neural network via a chess engine. Maia was designed specifically to play human-like at certain skill levels and even to make mistakes and blunders, just like an average chess player.
 To measure potential outcomes, we will use a between-subjects experiment design and compare our opponents move performance, game results (i.e. wins and losses), and opponent distraction measurables, such as average move time. Move performance will be measured by the Lichess Accuracy metric where an accuracy of 0% means the opponent never played a preferred move and 100% means the opponent played all the preferred moves of Stockfish, a very strong chess engine not to be confused with the Maia neural network. The comparisons will be made across our different groups consisting of a control group, a treatment group, and a placebo group for our preliminary experiment. And for our main experiment, we will compare across a control group and treatment group, utilizing ChatGPT for treatment.
 
-[^7]: Mcllroy-Young et al., 2020 - The human side of AI for chess.
-
 ## Randomization Process and Recruitment
 
 ### Lichess Randomization and Recruitment
 
-Lichess uses a popular rating method called Glicko-2, which uses confidence intervals when calculating ratings for players[^8]. When players first start on Lichess, the rating starts at 1500 +/- 1000. As players play more rated games, their rating changes and the confidence interval decreases. 
+Lichess uses a popular rating method called Glicko-2, which uses confidence intervals when calculating ratings for players\footnote{https://lichess.org/faq\#ratings}. When players first start on Lichess, the rating starts at 1500 +/- 1000. As players play more rated games, their rating changes and the confidence interval decreases. 
 
 Lichess’s game matchmaking feature allows a player to find a game against an opponent who also wants to play at the same time.  Players queue to play and it takes up to 30 seconds to find an opponent.  The opponent’s rating will be within about +/- 100 rating of the player’s rating.  Lichess uses a combination of a player’s ratings and confidence intervals to pair with similar players so that it will be a fair game.  Since we are playing at an average ‘1500’ rating level, the opponent is essentially random to our experiment.  Whichever players are matched against us will be included in our study.  
 
 Each of the bots that we used were identical, and trained to play at a 1500 Glicko-2 rating level. We relied on Lichess’s randomization strategy to pair us with similarly ranked players. This allowed us to control for different player skill levels while conducting our experiment.
-
-[^8]: https://lichess.org/faq#ratings
 
 ### Experimental Randomization
 
@@ -103,9 +99,7 @@ The chat bot has been prompted to keep responses short, to one sentence, and rel
 \end{center}
 \end{wrapfigure}
 
-We used a conservative estimate of 5-15% effect size for our power analysis. In related work, it was found that trash talking had an indirect effect on competitive performance through creation of a perceived rivalry between the players (Yip et al., 2018). Further, this research showed that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87. In other words, this research found that trash talking resulted in the opponent performing better.
+We used a conservative estimate of 5-15% effect size for our power analysis. In related work, it was found that trash talking had an indirect effect on competitive performance through creation of a perceived rivalry between the players \footnote{Yip et al., 2018}. Further, this research showed that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87. In other words, this research found that trash talking resulted in the opponent performing better.
 
 In our analysis, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.
-
-As seen in Figure 2, for both our Preliminary Experiment and Main Experiment, we were able to achieve our targeted sample size to have at least 80% power.
 

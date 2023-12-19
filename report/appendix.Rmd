@@ -6,18 +6,13 @@ output:
 # Appendices
 
 ## Appendix A: Ethical and Privacy Considerations
-Lichess, the platform that we used for conducting our experiment, has clear language around the use of bots, chess engines, and fair play. By employing the Microsoft maia chess bot (“Maia”)[^9] for gameplay, and the OpenAI API (“ChatGPT”) for conversation, there was more than one article from their terms of service that we did not follow. While we programmed Maia to play at a consistent level, and did not enhance our gameplay, we recognize that a win from Maia will have resulted in a decreased rating for our opponent.
+Lichess, the platform that we used for conducting our experiment, has clear language around the use of bots, chess engines, and fair play. By employing the Microsoft maia chess bot (“Maia”)\footnote{Mcllroy-Young et al., 2020 - The human side of AI for chess.} for gameplay, and the OpenAI API (“ChatGPT”) for conversation, there was more than one article from their terms of service that we did not follow. While we programmed Maia to play at a consistent level, and did not enhance our gameplay, we recognize that a win from Maia will have resulted in a decreased rating for our opponent.
 
-Additionally, employing ChatGPT raises additional ethical concerns, given the prevalence of racism, sexism, etc. found across modern chatbots, ChatGPT included[^10]. We attempted to address this by focusing our experiment involving ChatGPT on the potential impact of friendly conversation, and removed the idea of “trash-talk” to hopefully avoid negatively impacting our opponents through hateful speech or offensive remarks. Our prompt instructions for ChatGPT can be found in the Appendix B.
+Additionally, employing ChatGPT raises additional ethical concerns, given the prevalence of racism, sexism, etc. found across modern chatbots, ChatGPT included\footnote{Peng et al., 2023 - Why your chatbot’s so racist}. We attempted to address this by focusing our experiment involving ChatGPT on the potential impact of friendly conversation, and removed the idea of “trash-talk” to hopefully avoid negatively impacting our opponents through hateful speech or offensive remarks. Our prompt instructions for ChatGPT can be found in the Appendix B.
 
 Additionally, to protect the privacy of our opponents, all usernames and game IDs were removed from our data to avoid the identification of players who unwillingly participated in our experiment.
 
 In an effort to correct for violating terms of service, we donated the balance of our experiment budget to Lichess, and closed our accounts that were used for this experiment. Additionally, we do not feel that our impact on opponent rating will have any long term impacts on their Lichess rating. Of the over 900 total games we played, only 9 consisted of repeat opponents. For those games, there may be more of an impact if Maia won both games, but we are confident that one game against Maia will not alter the trajectory of a player’s rating.
-
-
-[^9]: Mcllroy-Young et al., 2020 - The human side of AI for chess.
-[^10]: Peng et al., 2023 - Why your chatbot’s so racist
-
 
 ## Appendix B: Sample ChatGPT prompt
 I am running an experiment on online chess players and whether or not chatting and banter in the comments while playing the game effect the other players performance.

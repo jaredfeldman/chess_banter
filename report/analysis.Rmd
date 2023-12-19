@@ -3,6 +3,7 @@ output:
   pdf_document: default
   html_document: default
 ---
+
 ```{r , warning=FALSE, message=FALSE, echo=FALSE}
 library(data.table)
 
@@ -24,12 +25,14 @@ inline_reference <- "r inline_reference"
 # Analysis
 
 ## Intent to Treat (ITT) Effect
+
 Our first step in evaluating the outcomes of our experiments is to estimate the Intent to Treat ($ITT$). The $ITT$ measures the outcomes of our experiment based on treatment assignment, without considering compliance rate. The $ITT$ is defined as:
 
+```{=tex}
 \begin{quote}
   \textit{$ITT$ = $E[Y_i(z = 1)] - E[Y_i(z = 0)]$}
 \end{quote}
-
+```
 where z signifies the assignment of the subject. Below shows the ITT across six of our ten 10 different outcome variables for each experiment. The table containing all ten outcomes can be found in the Appendix.
 
 ```{r, include=FALSE}
@@ -66,7 +69,6 @@ exp_data_main[ , treat := ifelse(chat_type == 'ChatGPT', 1, 0)]
 
 ```
 
-
 ```{r define measures, include=FALSE}
 # define the outcome metrics for stargazers
 measures <- c("Maia Win",
@@ -80,7 +82,6 @@ measures <- c("Maia Win",
               #"Opp ACPL",
               "Opp Avg Mv Time")
 ```
-
 
 ```{r ITT calc exp1 TvC, echo=FALSE,include=FALSE}
 exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
@@ -124,7 +125,6 @@ get_stargazer <- function(d, table_name) {
 
 ```
 
-
 ```{r, echo=FALSE,include=FALSE}
 exp_data_main[chat_type %in% c("ChatGPT", "Control GPT") , ]
 
@@ -154,10 +154,10 @@ main_expt_plt <- ggplot(exp_data_gpt, aes(x = opp_acc, color = factor(chat_type)
                      name = "") +
     theme(legend.key.height= unit(3, 'mm'), legend.key.width= unit(3, 'mm'), legend.position = 'bottom')
 ```
+
 ```{r plot 3, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Accuracy Across Treatment Groups"}
 prelim_acc_plt | main_expt_plt
 ```
-
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
 get_stargazer(exp_data_c_t, "Prelim Experiment")
@@ -166,22 +166,23 @@ get_stargazer(exp_data_c_t, "Prelim Experiment")
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
 get_stargazer(exp_data_main, "Main Experiment")
 ```
+
 \newpage
+
 ## Labeling compliers and non-compliers
 
-In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment.  We then defined a non-complier as an opponent who did not send a message.  We theorize that there may be multiple reasons why an opponent would not engage in chat with us.  
+In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment. We then defined a non-complier as an opponent who did not send a message. We theorize that there may be multiple reasons why an opponent would not engage in chat with us.
 
-1. Opponent has manually ‘muted’ chat and they do not see our messages.
-1. Opponent does not speak english (our language used in treatment).
-1. Opponent does not see the chat due to screen resolution or device used.
-1. Opponent does not want to engage in chat.
+1.  Opponent has manually 'muted' chat and they do not see our messages.
+2.  Opponent does not speak english (our language used in treatment).
+3.  Opponent does not see the chat due to screen resolution or device used.
+4.  Opponent does not want to engage in chat.
 
-An issue with our complier labeling is that opponents can mute at anytime during the game.  For example they may see our initial message, then greet us in the beginning, and mute chat immediately after.  This would mean they only received 1 out of the 6 messages that were planned but are counted as a complier.  This is a limitation of our analysis, because the website does not allow us to see when an opponent mutes.
-
+An issue with our complier labeling is that opponents can mute at anytime during the game. For example they may see our initial message, then greet us in the beginning, and mute chat immediately after. This would mean they only received 1 out of the 6 messages that were planned but are counted as a complier. This is a limitation of our analysis, because the website does not allow us to see when an opponent mutes.
 
 ## Complier Average Causal Effect (CACE)
-While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. As seen below, not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
 
+While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. As seen below, not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
 
 ```{r, include = FALSE}
 DT1 = data.table(
@@ -214,11 +215,12 @@ p_exp_graph | m_exp_graph
 
 The $CACE$ is calculated using the following formula:
 
+```{=tex}
 \begin{quote}
   \textit{$CACE$ = $ITT$/$ITT_d$}
 \end{quote}
-
-where $ITT_d$ is the proportion of compliers in the treatment group (the “take-up rate”). In our case, we can see above that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
+```
+where $ITT_d$ is the proportion of compliers in the treatment group (the "take-up rate"). In our case, we can see above that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
 
 ```{r cace function, echo=FALSE, include=FALSE}
 # define function to calculate cace
@@ -280,25 +282,24 @@ get_cace_stargazer(exp_data_main, 'Main Experiment: CACE')
 ```
 
 ## Benjamini-Hochberg (BH) Procedure
+
 While some test results in the tables above show statistical significance at the 0.1 $p$ value threshold, we need to adjust due to the number of tests that we conducted. Since we performed ten statistical tests, we have an increased chance of finding a $p$ value less than or equal to 0.1 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control for the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis.
 
 In this method, we take the $p$ values from each of our $CACE$ outcomes and compare them to their associated $BH_{critical}$ value. The $BH_{critical}$ value is defined as:
 
+```{=tex}
 \begin{quote}
   \textit{$BH_{critical}$ = ($i$/$m$) $*$ $Q$}
 \end{quote}
-
+```
 where $i$ is the rank of the $p$ value (i.e., the smallest value has $i=1$, etc.), $m$ is is the number of $p$ values (i.e., ten), and $Q$ is the allowable FDR (i.e., 0.05). In this test, if a $p$ value is less than its $BH_{critical}$ value, then the test is significant. Otherwise, the $p$ values that we found are likely the result of a false discovery.
 
 In both our Preliminary Experiment and Main Experiment, there were zero $p$ values less than their associated $BH_{critical}$ value, and thus we fail to reject the null hypothesis under both experiment conditions.
-
 
 ```{r}
 move_time   <- get_cace(exp_data_main, "treat", "respond", "opp_avg_move_time")
 ```
 
-
 ## Summary of Results
 
-Given the results and analysis of our experimentation, we fail to reject the null hypothesis that online chess player’s performance is directly impacted when analyzing performance measures such as move accuracy, blunders, & mistakes, as well as game outcomes in regards to wins and losses. Notably, we did, expectedly, observe an effect on players who were treated to conversations with ChatGPT where those players' average move time increased by `r round(move_time$coefficients[[2]],1)` seconds which over the course of a (average for our main experiment) `r exp_data_main[, median(num_moves)]` move game could add up. However, this effect is not statistically significant with a p-value of `r round(summary(move_time)$coefficients[8],3)` and given the Benjamini-Hochberg (BH) Procedure, the significance is further diluted.
-
+Given the results and analysis of our experimentation, we fail to reject the null hypothesis that online chess player's performance is directly impacted when analyzing performance measures such as move accuracy, blunders, & mistakes, as well as game outcomes in regards to wins and losses. Notably, we did, expectedly, observe an effect on players who were treated to conversations with ChatGPT where those players' average move time increased by `r round(move_time$coefficients[[2]],1)` seconds which over the course of a (average for our main experiment) `r exp_data_main[, median(num_moves)]` move game could add up. However, this effect is not statistically significant with a $p$ value of `r round(summary(move_time)$coefficients[8],3)` and given the Benjamini-Hochberg (BH) Procedure, the significance is further diluted.
