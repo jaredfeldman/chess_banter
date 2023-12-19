@@ -33,7 +33,7 @@ Our first step in evaluating the outcomes of our experiments is to estimate the 
   \textit{$ITT$ = $E[Y_i(z = 1)] - E[Y_i(z = 0)]$}
 \end{quote}
 ```
-where z signifies the assignment of the subject. Below shows the ITT across six of our ten 10 different outcome variables for each experiment. The table containing all ten outcomes can be found in the Appendix.
+where z signifies the assignment of the subject. Below shows the ITT across six of our ten 10 different outcome variables for each experiment. The table containing all ten outcomes can be found in the Appendix.  We found no statistical significance at the .05 level in either experiment as seen in tables 1 and 2.  
 
 ```{r, include=FALSE}
 exp_data      <- fread('../data/exp_data.csv')
@@ -156,11 +156,11 @@ main_expt_plt <- ggplot(exp_data_gpt, aes(x = opp_acc, color = factor(chat_type)
 ```
 
 ```{r plot 3, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Accuracy Across Treatment Groups"}
-prelim_acc_plt | main_expt_plt
+# prelim_acc_plt | main_expt_plt
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
-get_stargazer(exp_data_c_t, "Prelim Experiment")
+get_stargazer(exp_data_c_t, "Preliminary Experiment")
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
@@ -220,7 +220,7 @@ The $CACE$ is calculated using the following formula:
   \textit{$CACE$ = $ITT$/$ITT_d$}
 \end{quote}
 ```
-where $ITT_d$ is the proportion of compliers in the treatment group (the "take-up rate"). In our case, we can see in Figure 4 that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
+where $ITT_d$ is the proportion of compliers in the treatment group (the "take-up rate"). In our case, we can see in Figure 2 that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
 
 Now we will run the same regression analysis, but this time we will adjust our effects by predicting outcomes based on the CACE methods described above. In Table 3, for our preliminary experiment we see a slight effect on Opponent resignations and small uptick in Opponent Mistakes with a $p$ value < .1. In Table 4 for our Main Experiment, we see no statistical significance for outcomes except on Opponent Average Move Time being up more than 5.8 seconds over those in the control group. 
 

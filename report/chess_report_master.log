@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 23.5) (preloaded format=xelatex 2023.12.18)  19 DEC 2023 11:00
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 23.5) (preloaded format=xelatex 2023.12.18)  19 DEC 2023 13:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -554,13 +554,7 @@ File: bkm-dvipdfm.def 2020-11-06 v1.29 bookmark driver for dvipdfm (HO)
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 ) (chess_report_master.aux
 
-LaTeX Warning: Label `fig:figs' multiply defined.
-
-
 LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `fig:figs' multiply defined.
 
 
 LaTeX Warning: Label `' multiply defined.
@@ -968,88 +962,41 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 
 [1
 
-] [2] [3]
-File: chess_report_master_files/figure-latex/plot 2-1.pdf Graphic file (type pd
-f)
-<use chess_report_master_files/figure-latex/plot 2-1.pdf>
-[4]
+] [2] [3] [4]
 File: power_analysis.png Graphic file (type bmp)
 <power_analysis.png>
 
-Underfull \hbox (badness 1629) in paragraph at lines 365--369
-[]\TU/lmr/m/n/10 In our analysis, we determined that
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 365--369
-\TU/lmr/m/n/10 we would need roughly 150 sam-
- []
-
-
-Underfull \hbox (badness 3029) in paragraph at lines 365--369
-\TU/lmr/m/n/10 ples of each treatment type to de-
- []
-
-
-Underfull \hbox (badness 7540) in paragraph at lines 365--369
-\TU/lmr/m/n/10 tect an effect size of 7.5%, and
- []
-
-
-Underfull \hbox (badness 6204) in paragraph at lines 365--369
-\TU/lmr/m/n/10 less samples for an effect size of
- []
-
-
-Underfull \hbox (badness 4072) in paragraph at lines 365--369
-\TU/lmr/m/n/10 10%. Thus, we targeted 100–150
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 365--369
-\TU/lmr/m/n/10 samples for both of our experi-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 365--369
-
- []
-
-File: chess_report_master_files/figure-latex/plot 3-1.pdf Graphic file (type pd
-f)
-<use chess_report_master_files/figure-latex/plot 3-1.pdf>
-
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 400--421
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 393--414
  [][] 
  []
 
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 426--447
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 419--440
  [][] 
  []
 
-[5] [6]
+[5]
 File: chess_report_master_files/figure-latex/unnamed-chunk-14-1.pdf Graphic fil
 e (type pdf)
 <use chess_report_master_files/figure-latex/unnamed-chunk-14-1.pdf>
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 522--543
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 515--536
  [][] 
  []
 
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 548--569
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 541--562
  [][] 
  []
 
-[7] [8] [9] [10]
+[6] [7] [8] [9]
 File: ./prelimExpPlacebo.png Graphic file (type bmp)
 <./prelimExpPlacebo.png>
 File: ./prelimExpTreatment.png Graphic file (type bmp)
 <./prelimExpTreatment.png>
 File: ./mainExpChatgpt.png Graphic file (type bmp)
 <./mainExpChatgpt.png>
-[11] [12] (chess_report_master.aux)
+[10] [11] (chess_report_master.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-06-16>
@@ -1059,12 +1006,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 20209 strings out of 411164
- 360425 string characters out of 5810810
+ 20191 strings out of 411164
+ 359457 string characters out of 5810810
  1878394 words of memory out of 5000000
- 40470 multiletter control sequences out of 15000+600000
+ 40454 multiletter control sequences out of 15000+600000
  519936 words of font info for 87 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 90i,11n,120p,1018b,488s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,11n,120p,1018b,340s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on chess_report_master.pdf (12 pages).
+Output written on chess_report_master.pdf (11 pages).

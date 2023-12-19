@@ -64,4 +64,3 @@ inline_reference <- "r inline_reference"
 \newpage
 ```{r, child='./appendix.Rmd'}
 ```
-
