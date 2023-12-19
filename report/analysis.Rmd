@@ -160,11 +160,11 @@ main_expt_plt <- ggplot(exp_data_gpt, aes(x = opp_acc, color = factor(chat_type)
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
-get_stargazer(exp_data_c_t, "Preliminary Experiment")
+get_stargazer(exp_data_c_t, "Preliminary Experiment: ITT")
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
-get_stargazer(exp_data_main, "Main Experiment")
+get_stargazer(exp_data_main, "Main Experiment: ITT")
 ```
 
 \newpage
@@ -222,7 +222,7 @@ The $CACE$ is calculated using the following formula:
 ```
 where $ITT_d$ is the proportion of compliers in the treatment group (the "take-up rate"). In our case, we can see in Figure 2 that the take-up rates are approximately 30% and 33% for the preliminary and main experiments, respectively.
 
-Now we will run the same regression analysis, but this time we will adjust our effects by predicting outcomes based on the CACE methods described above. In Table 3, for our preliminary experiment we see a slight effect on Opponent resignations and small uptick in Opponent Mistakes with a $p$ value < .1. In Table 4 for our Main Experiment, we see no statistical significance for outcomes except on Opponent Average Move Time being up more than 5.8 seconds over those in the control group. 
+Now we will run the same regression analysis, but this time we will adjust our effects by predicting outcomes based on the CACE methods described above. In Table 3, for our preliminary experiment we see a slight effect on Opponent resignations and small uptick in Opponent Mistakes with a $p$-value < 0.1. In Table 4 for our Main Experiment, we see no statistical significance for outcomes except on Opponent Average Move Time being up more than 5.8 seconds over those in the control group. 
 
 ```{r cace function, echo=FALSE, include=FALSE}
 # define function to calculate cace
@@ -286,18 +286,18 @@ get_cace_stargazer(exp_data_main, 'Main Experiment: CACE')
 
 ## Benjamini-Hochberg (BH) Procedure
 
-While some test results in the tables above show statistical significance at the 0.1 $p$ value threshold, we need to adjust due to the number of tests that we conducted. Since we performed ten statistical tests, we have an increased chance of finding a $p$ value less than or equal to 0.1 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control for the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis.
+While some test results in the tables above show statistical significance at the 0.1 $p$-value threshold, we need to adjust due to the number of tests that we conducted. Since we performed ten statistical tests, we have an increased chance of finding a $p$-value less than or equal to 0.1 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control for the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis.
 
-In this method, we take the $p$ values from each of our $CACE$ outcomes and compare them to their associated $BH_{critical}$ value. The $BH_{critical}$ value is defined as:
+In this method, we take the $p$-values from each of our $CACE$ outcomes and compare them to their associated $BH_{critical}$ value. The $BH_{critical}$ value is defined as:
 
 ```{=tex}
 \begin{quote}
   \textit{$BH_{critical}$ = ($i$/$m$) $*$ $Q$}
 \end{quote}
 ```
-where $i$ is the rank of the $p$ value (i.e., the smallest value has $i=1$, etc.), $m$ is is the number of $p$ values (i.e., ten), and $Q$ is the allowable FDR (i.e., 0.05). In this test, if a $p$ value is less than its $BH_{critical}$ value, then the test is significant. Otherwise, the $p$ values that we found are likely the result of a false discovery.
+where $i$ is the rank of the $p$-value (i.e., the smallest value has $i=1$, etc.), $m$ is the number of $p$-values (i.e., ten), and $Q$ is the allowable FDR (i.e., 0.05). In this test, if a $p$-value is less than its $BH_{critical}$ value, then the test is significant. Otherwise, the $p$-values that we found are likely the result of a false discovery.
 
-In both our Preliminary Experiment and Main Experiment, there were zero $p$ values less than their associated $BH_{critical}$ value, and thus we fail to reject the null hypothesis under both experiment conditions.
+In both our Preliminary Experiment and Main Experiment, there were zero $p$-values less than their associated $BH_{critical}$ value, and thus we fail to reject the null hypothesis under both experiment conditions.
 
 ```{r}
 move_time   <- get_cace(exp_data_main, "treat", "respond", "opp_avg_move_time")
@@ -305,4 +305,4 @@ move_time   <- get_cace(exp_data_main, "treat", "respond", "opp_avg_move_time")
 
 ## Summary of Results
 
-Given the results and analysis of our experimentation, we fail to reject the null hypothesis that online chess player's performance is directly impacted when analyzing performance measures such as move accuracy, blunders, & mistakes, as well as game outcomes in regards to wins and losses. Notably, we did, expectedly, observe an effect on players who were treated to conversations with ChatGPT where those players' average move time increased by `r round(move_time$coefficients[[2]],1)` seconds which over the course of a (average for our main experiment) `r exp_data_main[, median(num_moves)]` move game could add up. However, this effect is not statistically significant with a $p$ value of `r round(summary(move_time)$coefficients[8],3)` and given the Benjamini-Hochberg (BH) Procedure, the significance is further diluted.
+Given the results and analysis of our experimentation, we fail to reject the null hypothesis that online chess player's performance is directly impacted when analyzing performance measures such as move accuracy, blunders, & mistakes, as well as game outcomes in regards to wins and losses. Notably, we did, expectedly, observe an effect on players who were treated to conversations with ChatGPT where those players' average move time increased by `r round(move_time$coefficients[[2]],1)` seconds which over the course of a (average for our main experiment) `r exp_data_main[, median(num_moves)]` move game could add up. However, this effect is not statistically significant with a $p$-value of `r round(summary(move_time)$coefficients[8],3)` and given the Benjamini-Hochberg (BH) Procedure, the significance is further diluted.
