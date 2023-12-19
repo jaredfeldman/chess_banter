@@ -4,7 +4,7 @@
 
 ## Overview
 
-To test our hypothesis and answer the proposed research question, we turn to online chess platform lichess.org, which has an extensive, open source api. The lichess.org api contains a board interaction protocol that was designed for third party programmers to conduct an entire chess game through the Lichess website. For our purposes, this provides the perfect vehicle to automate our study and analyses entirely through programming. 
+To test our hypothesis and answer the proposed research question, we turn to online chess platform lichess.org, which has an extensive, open source API The lichess.org API contains a board interaction protocol that was designed for third party programmers to conduct an entire chess game through the Lichess website. For our purposes, this provides the perfect vehicle to automate our study and analyses entirely through programming. 
 
 In order to provide the most equal and consistent chess games between all subjects, we utilize a chess engine to decide the moves returned to the opponent. One downside of utilizing a chess engine is they are mostly designed to play the best moves and are not particularly good at playing like a human. To overcome this,  we will harness the power of the Maia neural network ("Maia") as detailed in "The human side of AI for chess" by Microsoft Research\footnote{Mcllroy-Young et al., 2020 - The human side of AI for chess.}. Maia was designed specifically to play human-like at certain skill levels and even to make mistakes and blunders, just like an average chess player.
 
@@ -59,7 +59,7 @@ gpt_chart <- ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))
 ```
 
 ```{r plot 2, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Rating Across Treatment Groups"}
-# prelim_chart | gpt_chart
+prelim_chart | gpt_chart
 ```
  
 
@@ -101,8 +101,7 @@ The chat bot has been prompted to keep responses short, to one sentence, and rel
 We used a conservative estimate of 5-15% effect size for our power analysis. In related work, it was found that trash talking had an indirect effect on competitive performance through creation of a perceived rivalry between the players \footnote{Yip et al., 2018}. Further, this research showed that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87. In other words, this research found that trash talking resulted in the opponent performing better.
 
 
-
-In our analysis, as seen in Figure 1, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.
+In our analysis, as seen in Figure 2, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.
   
 For both our Preliminary Experiment and Main Experiment, we were able to achieve our targeted sample size to have at least 80% power.  We had at least 144 samples in the Preliminary Experiment and at least 195 for our Main Experiment.
   
