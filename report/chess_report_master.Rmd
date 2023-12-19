@@ -61,7 +61,7 @@ inline_reference <- "r inline_reference"
 
 ```{r, child='./Conclusion.Rmd'}
 ```
-
+\newpage
 ```{r, child='./appendix.Rmd'}
 ```
 
