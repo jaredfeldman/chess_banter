@@ -176,7 +176,7 @@ get_stargazer(exp_data_main, "Main Experiment: ITT")
 
 ## Labeling compliers and non-compliers
 
-In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment. We then defined a non-complier as an opponent who did not send a message. We theorize that there may be multiple reasons why an opponent would not engage in chat with us.
+In this experiment we defined a complier as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment. We then defined a non-complier as an opponent who did not send a message. We theorize that there may be multiple reasons why an opponent would not engage in chat with us.
 
 1.  Opponent has manually 'muted' chat and they do not see our messages.
 2.  Opponent does not speak english (our language used in treatment).
