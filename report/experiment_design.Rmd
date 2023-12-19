@@ -90,12 +90,6 @@ The main experiment uses the ChatGPT API for the chat treatment and has the foll
 
 The chat bot has been prompted to keep responses short, to one sentence, and relevant. The chat bot is also given instructions to be lighthearted, not rude, not use profanity, empathetic, polite, and generally tries to make people smile. To give the chat bot some depth, we also prompted the chat bot to be Magnus Carlson’s young cousin living in Boston who is really fond of pineapple on pizza.
 
-### Compliance concerns
-
-Both experiments raised notable compliance concerns. One significant issue was the potential for an opponent to manually "mute" the chat, rendering us unaware of whether the subject was still receiving treatment. To assess compliance, our approach involved cross-referencing the logs to confirm opponent responses. However, it's crucial to acknowledge the limitations of this method, as an opponent could still "mute" after providing an initial response.
-
-Another factor influencing treatment compliance stems from the global nature of the game, encompassing participants worldwide. In cases where subjects do not speak English, a lack of response may not necessarily indicate non-compliance; rather, it could be attributed to language barriers.
-
 ## Power Analysis
 
 \begin{wrapfigure}{R}{.6\textwidth}  
@@ -109,5 +103,5 @@ We used a conservative estimate of 5-15% effect size for our power analysis. In 
 
 In our analysis, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.
 
-As seen left, for both Experiment 1 and Experiment 2, we were able to achieve our targeted sample size to have at least 80% power.
+As seen in Figure 2, for both Experiment 1 and Experiment 2, we were able to achieve our targeted sample size to have at least 80% power.
 

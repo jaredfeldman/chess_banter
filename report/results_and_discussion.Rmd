@@ -234,8 +234,10 @@ stargazer(itt_main_models,
 
 ```
 
-### Non-compliance
-In our experiment, we only tested for one-sided compliance. In particular, we tested whether someone was intended to receive treatment, but did not engage in the chat room. Conversely, our bot was not programmed to engage with opponents if they chatted first, so we did not have concerns of non-compliance where someone may have been targeted for control, but instead received treatment.
+### Labeling compliers and non-compliers
+
+In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment.  We then defined a non-complier as an opponent who did not send a message.  We theorize that there may be multiple reasons why an opponent would not engage in chat with us.  1) Opponent has manually ‘muted’ chat and they do not see our messages.  2) Opponent does not speak english (our language used in treatment).  3) Opponent does not see the chat due to screen resolution or device used.  4) Opponent does not want to engage in chat.
+An issue with our complier labeling is that opponents can mute at anytime during the game.  For example they may see our initial message, then greet us in the beginning, and mute chat immediately after.  This would mean they only received 1 out of the 6 messages that were planned but are counted as a complier.  This is a limitation of our analysis, because the website does not allow us to see when an opponent mutes.
 
 
 ### Complier Average Causal Effect (CACE)
