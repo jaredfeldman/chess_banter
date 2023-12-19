@@ -27,7 +27,7 @@ Each of the bots that we used were identical, and trained to play at a 1500 Glic
 
 ### Experimental Randomization
 
-To randomize treatment group assignment, we employed the python function ‘randint()’ from the ‘random’ library.  This function returns an essentially random integer from a specified range.  The range that was specified on the number of experimental groups.  Our python script would then perform treatment based on the selected integer.
+To randomize treatment group assignment, we employed the python function `randint()` from the `random` library.  This function returns a random integer from a specified range. The range that was specified on the number of experimental groups. Our python script would then perform treatment based on the selected integer.
 
 ```{r read_data, include=FALSE}
 exp_data_gpt <- fread('../data/exp_data_gpt.csv')
@@ -64,7 +64,7 @@ gpt_chart <- ggplot(exp_data_gpt, aes(x = opp_rating, color = factor(chat_type))
 ```{r plot 2, include = TRUE, echo=FALSE,fig.height=3.5,fig.cap="\\label{fig:figs}Opponent Rating Across Treatment Groups"}
 prelim_chart | gpt_chart
 ```
-
+Following both Lichess randomization and experimental randomization, we found that there was no significant difference between the ratings in each of the experimental groups (visually represented in Figure 1 above). This was necessary to check because differently rated players may have different innate playing metrics.  
 
 ## Control and Treatment Variants
 
@@ -90,7 +90,7 @@ The main experiment uses the ChatGPT API for the chat treatment and has the foll
 1. The control group receives no chat messages during game play.
 2. The treatment (ChatGPT group) begins with a fixed start script to initiate conversations with the subject, and once the subject responds to the fixed script, the ChatGPT AI (chat bot) takes control of the chats.
 
-The chat bot has been prompted to keep responses short, to one sentence, and relevant. The chat bot is also given instructions to be lighthearted, not rude, not use profanity, empathetic, polite, and generally tries to make people smile. To give the chat bot some depth, we also prompted the chat bot to be Magnus Carlson’s young cousin living in Boston who is really fond of pineapple on pizza.
+The chat bot has been prompted to keep responses short, to one sentence, and relevant. The chat bot is also given instructions to be lighthearted, not rude, not use profanity, empathetic, polite, and generally tries to make people smile. To give the chat bot some depth, we also prompted the chat bot to be Magnus Carlson’s young cousin living in Boston who is really fond of pineapple on pizza. A more in-depth description of the prompt used can be found in Appendix B.
 
 ## Power Analysis
 
@@ -105,5 +105,5 @@ We used a conservative estimate of 5-15% effect size for our power analysis. In 
 
 In our analysis, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.
 
-As seen in Figure 2, for both Experiment 1 and Experiment 2, we were able to achieve our targeted sample size to have at least 80% power.
+As seen in Figure 2, for both our Preliminary Experiment and Main Experiment, we were able to achieve our targeted sample size to have at least 80% power.
 
