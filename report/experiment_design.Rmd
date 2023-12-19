@@ -102,5 +102,5 @@ We used a conservative estimate of 5-15% effect size for our power analysis. In 
 
 In our analysis, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.\
   
-  
+ As seen in Figure 2, for both our Preliminary Experiment and Main Experiment, we were able to achieve our targeted sample size to have at least 80% power. 
   
