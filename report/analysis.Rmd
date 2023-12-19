@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ```{r , warning=FALSE, message=FALSE, echo=FALSE}
 library(data.table)
 
@@ -138,7 +143,13 @@ get_stargazer(exp_data_main, "Main Experiment ITT")
 \newpage
 ## Labeling compliers and non-compliers
 
-In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment.  We then defined a non-complier as an opponent who did not send a message.  We theorize that there may be multiple reasons why an opponent would not engage in chat with us.  1) Opponent has manually ‘muted’ chat and they do not see our messages.  2) Opponent does not speak english (our language used in treatment).  3) Opponent does not see the chat due to screen resolution or device used.  4) Opponent does not want to engage in chat.
+In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment.  We then defined a non-complier as an opponent who did not send a message.  We theorize that there may be multiple reasons why an opponent would not engage in chat with us.  
+
+1. Opponent has manually ‘muted’ chat and they do not see our messages.
+1. Opponent does not speak english (our language used in treatment).
+1. Opponent does not see the chat due to screen resolution or device used.
+1. Opponent does not want to engage in chat.
+
 An issue with our complier labeling is that opponents can mute at anytime during the game.  For example they may see our initial message, then greet us in the beginning, and mute chat immediately after.  This would mean they only received 1 out of the 6 messages that were planned but are counted as a complier.  This is a limitation of our analysis, because the website does not allow us to see when an opponent mutes.
 
 
