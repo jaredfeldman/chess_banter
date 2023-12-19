@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 23.5) (preloaded format=xelatex 2023.12.18)  19 DEC 2023 13:07
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 23.5) (preloaded format=xelatex 2023.12.18)  19 DEC 2023 13:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -966,12 +966,12 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 File: power_analysis.png Graphic file (type bmp)
 <power_analysis.png>
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 393--414
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 394--415
  [][] 
  []
 
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 419--440
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 420--441
  [][] 
  []
 
@@ -980,12 +980,12 @@ File: chess_report_master_files/figure-latex/unnamed-chunk-14-1.pdf Graphic fil
 e (type pdf)
 <use chess_report_master_files/figure-latex/unnamed-chunk-14-1.pdf>
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 515--536
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 516--537
  [][] 
  []
 
 
-Overfull \hbox (36.94496pt too wide) in paragraph at lines 541--562
+Overfull \hbox (36.94496pt too wide) in paragraph at lines 542--563
  [][] 
  []
 

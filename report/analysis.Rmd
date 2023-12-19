@@ -182,7 +182,7 @@ An issue with our complier labeling is that opponents can mute at anytime during
 
 ## Complier Average Causal Effect (CACE)
 
-While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. In Figure 4, we can see not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
+While the $ITT$ allows us to get a glimpse into potential treatment effects, it does not consider compliers and non-compliers. In Figure 2, we can see not everyone received their targeted dose of treatment, which we now take into account in calculating the Complier Average Causal Effect ($CACE$).
 
 ```{r, include = FALSE}
 DT1 = data.table(
