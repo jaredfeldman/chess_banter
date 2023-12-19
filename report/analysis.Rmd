@@ -79,50 +79,82 @@ measures <- c("Maia Win",
 
 ```{r ITT calc exp1 TvC, echo=FALSE,include=FALSE}
 exp_data_c_t <- exp_data[chat_type %in% c("Chatty", "Control") , ]
-
 # only include rows where respond != NA
 exp_data_c_t <- exp_data_c_t[complete.cases(exp_data_c_t$respond), ]
 
-itt_prelim_win           <- exp_data_c_t[ , lm(maia_win ~ treat)]
-itt_prelim_maia_mate     <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
-itt_prelim_opp_mate      <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
-itt_prelim_opp_resign    <- exp_data_c_t[ , lm(opp_resign ~ treat)]
-itt_prelim_draw          <- exp_data_c_t[ , lm(draw ~ treat)]
-itt_prelim_opp_acc       <- exp_data_c_t[ , lm(opp_acc ~ treat)]
-itt_prelim_opp_blunders  <- exp_data_c_t[ , lm(opp_blunders ~ treat)]
-itt_prelim_opp_mistakes  <- exp_data_c_t[ , lm(opp_mistakes ~ treat)]
-itt_prelim_opp_acpl      <- exp_data_c_t[ , lm(opp_acpl ~ treat)]
-itt_prelim_opp_move_time <- exp_data_c_t[ , lm(opp_avg_move_time ~ treat)]
 
-# add robust standard errors
+get_stargazer <- function(d, table_name) {
+  
+  
+  maia_win           <- d[ , lm(maia_win ~ treat)]
+  #maia_mate     <- d[ , lm(maia_checkmate ~ treat)]
+  #opp_mate      <- d[ , lm(opp_checkmate ~ treat)]
+  opp_resign    <- d[ , lm(opp_resign ~ treat)]
+  #draw          <- d[ , lm(draw ~ treat)]
+  opp_acc       <- d[ , lm(opp_acc ~ treat)]
+  blunders  <- d[ , lm(opp_blunders ~ treat)]
+  mistakes  <- d[ , lm(opp_mistakes ~ treat)]
+  #opp_acpl      <- d[ , lm(opp_acpl ~ treat)]
+  move_time <- d[ , lm(opp_avg_move_time ~ treat)]
+  
+  
+  stargazer(maia_win, 
+          opp_resign,
+          opp_acc,
+          blunders,
+          mistakes,
+          move_time,
+          title=table_name,
+          dep.var.labels.include = FALSE,
+          #dep.var.labels = 'Outcome Variables',
+          column.labels = measures,
+          covariate.labels = c('Treatment'),
+          type = 'latex',
+          header = FALSE,
+          omit.stat = c('f','rsq','ser')
+          )
+  
+  
+}
 
-itt_prelim_win_rse           <- coeftest(itt_prelim_win, vcov = vcovHC)
-itt_prelim_maia_mate_rse     <- coeftest(itt_prelim_maia_mate, vcov = vcovHC)
-itt_prelim_opp_mate_rse      <- coeftest(itt_prelim_opp_mate, vcov = vcovHC)
-itt_prelim_opp_resign_rse    <- coeftest(itt_prelim_opp_resign, vcov = vcovHC)
-itt_prelim_draw_rse          <- coeftest(itt_prelim_draw, vcov = vcovHC)
-itt_prelim_opp_acc_rse       <- coeftest(itt_prelim_opp_acc, vcov = vcovHC)
-itt_prelim_opp_blunders_rse  <- coeftest(itt_prelim_opp_blunders, vcov = vcovHC)
-itt_prelim_opp_mistakes_rse  <- coeftest(itt_prelim_opp_mistakes, vcov = vcovHC)
-itt_prelim_opp_acpl_rse      <- coeftest(itt_prelim_opp_acpl, vcov = vcovHC)
-itt_prelim_opp_move_time_rse <- coeftest(itt_prelim_opp_move_time, vcov = vcovHC)
 
-itt_prelim_models <- list(itt_prelim_win_rse,
-                       itt_prelim_opp_resign_rse,
-                       itt_prelim_opp_acc_rse,
-                       itt_prelim_opp_blunders_rse,
-                       itt_prelim_opp_mistakes_rse,
-                       itt_prelim_opp_move_time_rse)
+# 
+# 
+# itt_prelim_win           <- exp_data_c_t[ , lm(maia_win ~ treat)]
+# itt_prelim_maia_mate     <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
+# itt_prelim_opp_mate      <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
+# itt_prelim_opp_resign    <- exp_data_c_t[ , lm(opp_resign ~ treat)]
+# itt_prelim_draw          <- exp_data_c_t[ , lm(draw ~ treat)]
+# itt_prelim_opp_acc       <- exp_data_c_t[ , lm(opp_acc ~ treat)]
+# itt_prelim_opp_blunders  <- exp_data_c_t[ , lm(opp_blunders ~ treat)]
+# itt_prelim_opp_mistakes  <- exp_data_c_t[ , lm(opp_mistakes ~ treat)]
+# itt_prelim_opp_acpl      <- exp_data_c_t[ , lm(opp_acpl ~ treat)]
+# itt_prelim_opp_move_time <- exp_data_c_t[ , lm(opp_avg_move_time ~ treat)]
+# 
+# # add robust standard errors
+# 
+# itt_prelim_win_rse           <- coeftest(itt_prelim_win, vcov = vcovHC)
+# itt_prelim_maia_mate_rse     <- coeftest(itt_prelim_maia_mate, vcov = vcovHC)
+# itt_prelim_opp_mate_rse      <- coeftest(itt_prelim_opp_mate, vcov = vcovHC)
+# itt_prelim_opp_resign_rse    <- coeftest(itt_prelim_opp_resign, vcov = vcovHC)
+# itt_prelim_draw_rse          <- coeftest(itt_prelim_draw, vcov = vcovHC)
+# itt_prelim_opp_acc_rse       <- coeftest(itt_prelim_opp_acc, vcov = vcovHC)
+# itt_prelim_opp_blunders_rse  <- coeftest(itt_prelim_opp_blunders, vcov = vcovHC)
+# itt_prelim_opp_mistakes_rse  <- coeftest(itt_prelim_opp_mistakes, vcov = vcovHC)
+# itt_prelim_opp_acpl_rse      <- coeftest(itt_prelim_opp_acpl, vcov = vcovHC)
+# itt_prelim_opp_move_time_rse <- coeftest(itt_prelim_opp_move_time, vcov = vcovHC)
+# 
+# itt_prelim_models <- list(itt_prelim_win_rse,
+#                        itt_prelim_opp_resign_rse,
+#                        itt_prelim_opp_acc_rse,
+#                        itt_prelim_opp_blunders_rse,
+#                        itt_prelim_opp_mistakes_rse,
+#                        itt_prelim_opp_move_time_rse)
 
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
-stargazer(itt_prelim_models,
-          type = 'latex',
-          header = FALSE,          
-          dep.var.labels = 'Outcome Variables',
-          column.labels = measures,
-          covariate.labels = "Treatment")
+get_stargazer(exp_data_c_t, "Prelim itt table1")
 ```
 
 
@@ -132,47 +164,41 @@ exp_data_main[chat_type %in% c("ChatGPT", "Control GPT") , ]
 # only include rows where respond != NA
 exp_data_main <- exp_data_main[complete.cases(exp_data_main$respond), ]
 
-itt_main_win           <- exp_data_main[ , lm(maia_win ~ treat)]
-itt_main_maia_mate     <- exp_data_main[ , lm(maia_checkmate ~ treat)]
-itt_main_opp_mate      <- exp_data_main[ , lm(opp_checkmate ~ treat)]
-itt_main_opp_resign    <- exp_data_main[ , lm(opp_resign ~ treat)]
-itt_main_draw          <- exp_data_main[ , lm(draw ~ treat)]
-itt_main_opp_acc       <- exp_data_main[ , lm(opp_acc ~ treat)]
-itt_main_opp_blunders  <- exp_data_main[ , lm(opp_blunders ~ treat)]
-itt_main_opp_mistakes  <- exp_data_main[ , lm(opp_mistakes ~ treat)]
-itt_main_opp_acpl      <- exp_data_main[ , lm(opp_acpl ~ treat)]
-itt_main_opp_move_time <- exp_data_main[ , lm(opp_avg_move_time ~ treat)]
-
-# add robust standard errors
-
-itt_main_win_rse           <- coeftest(itt_main_win, vcov = vcovHC)
-itt_main_maia_mate_rse     <- coeftest(itt_main_maia_mate, vcov = vcovHC)
-itt_main_opp_mate_rse      <- coeftest(itt_main_opp_mate, vcov = vcovHC)
-itt_main_opp_resign_rse    <- coeftest(itt_main_opp_resign, vcov = vcovHC)
-itt_main_draw_rse          <- coeftest(itt_main_draw, vcov = vcovHC)
-itt_main_opp_acc_rse       <- coeftest(itt_main_opp_acc, vcov = vcovHC)
-itt_main_opp_blunders_rse  <- coeftest(itt_main_opp_blunders, vcov = vcovHC)
-itt_main_opp_mistakes_rse  <- coeftest(itt_main_opp_mistakes, vcov = vcovHC)
-itt_main_opp_acpl_rse      <- coeftest(itt_main_opp_acpl, vcov = vcovHC)
-itt_main_opp_move_time_rse <- coeftest(itt_main_opp_move_time, vcov = vcovHC)
-
-itt_main_models <- list(itt_main_win_rse,
-                        itt_main_opp_resign_rse,
-                        itt_main_opp_acc_rse,
-                        itt_main_opp_blunders_rse,
-                        itt_main_opp_mistakes_rse,
-                        itt_main_opp_move_time_rse)
+# itt_main_win           <- exp_data_main[ , lm(maia_win ~ treat)]
+# itt_main_maia_mate     <- exp_data_main[ , lm(maia_checkmate ~ treat)]
+# itt_main_opp_mate      <- exp_data_main[ , lm(opp_checkmate ~ treat)]
+# itt_main_opp_resign    <- exp_data_main[ , lm(opp_resign ~ treat)]
+# itt_main_draw          <- exp_data_main[ , lm(draw ~ treat)]
+# itt_main_opp_acc       <- exp_data_main[ , lm(opp_acc ~ treat)]
+# itt_main_opp_blunders  <- exp_data_main[ , lm(opp_blunders ~ treat)]
+# itt_main_opp_mistakes  <- exp_data_main[ , lm(opp_mistakes ~ treat)]
+# itt_main_opp_acpl      <- exp_data_main[ , lm(opp_acpl ~ treat)]
+# itt_main_opp_move_time <- exp_data_main[ , lm(opp_avg_move_time ~ treat)]
+# 
+# # add robust standard errors
+# 
+# itt_main_win_rse           <- coeftest(itt_main_win, vcov = vcovHC)
+# itt_main_maia_mate_rse     <- coeftest(itt_main_maia_mate, vcov = vcovHC)
+# itt_main_opp_mate_rse      <- coeftest(itt_main_opp_mate, vcov = vcovHC)
+# itt_main_opp_resign_rse    <- coeftest(itt_main_opp_resign, vcov = vcovHC)
+# itt_main_draw_rse          <- coeftest(itt_main_draw, vcov = vcovHC)
+# itt_main_opp_acc_rse       <- coeftest(itt_main_opp_acc, vcov = vcovHC)
+# itt_main_opp_blunders_rse  <- coeftest(itt_main_opp_blunders, vcov = vcovHC)
+# itt_main_opp_mistakes_rse  <- coeftest(itt_main_opp_mistakes, vcov = vcovHC)
+# itt_main_opp_acpl_rse      <- coeftest(itt_main_opp_acpl, vcov = vcovHC)
+# itt_main_opp_move_time_rse <- coeftest(itt_main_opp_move_time, vcov = vcovHC)
+# 
+# itt_main_models <- list(itt_main_win_rse,
+#                         itt_main_opp_resign_rse,
+#                         itt_main_opp_acc_rse,
+#                         itt_main_opp_blunders_rse,
+#                         itt_main_opp_mistakes_rse,
+#                         itt_main_opp_move_time_rse)
 
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
-stargazer(itt_main_models,
-          type = 'latex',
-          header = FALSE,
-          dep.var.labels = 'Outcome Variables',
-          column.labels = measures,
-          covariate.labels = "Treatment")
-
+get_stargazer(exp_data_main, "Main Experiment ITT")
 ```
 \newpage
 ## Labeling compliers and non-compliers
