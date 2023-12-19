@@ -155,11 +155,11 @@ prelim_acc_plt | main_expt_plt
 
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
-get_stargazer(exp_data_c_t, "Prelim itt table1")
+get_stargazer(exp_data_c_t, "Prelim Experiment")
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE}
-get_stargazer(exp_data_main, "Main Experiment ITT")
+get_stargazer(exp_data_main, "Main Experiment")
 ```
 \newpage
 ## Labeling compliers and non-compliers
@@ -264,8 +264,8 @@ get_cace_stargazer <- function(d, table_name) {
 ```
 
 ```{r, include=TRUE, results='asis', echo=FALSE, warning=FALSE}
-get_cace_stargazer(exp_data_c_t, 'cace prelim table')
-get_cace_stargazer(exp_data_main, 'cace main experiment')
+get_cace_stargazer(exp_data_c_t, 'Preliminary Experiment: CACE')
+get_cace_stargazer(exp_data_main, 'Main Experiment: CACE')
 ```
 
 ## Benjamini-Hochberg (BH) Procedure
