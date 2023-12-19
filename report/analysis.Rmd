@@ -117,40 +117,6 @@ get_stargazer <- function(d, table_name) {
   
 }
 
-
-# 
-# 
-# itt_prelim_win           <- exp_data_c_t[ , lm(maia_win ~ treat)]
-# itt_prelim_maia_mate     <- exp_data_c_t[ , lm(maia_checkmate ~ treat)]
-# itt_prelim_opp_mate      <- exp_data_c_t[ , lm(opp_checkmate ~ treat)]
-# itt_prelim_opp_resign    <- exp_data_c_t[ , lm(opp_resign ~ treat)]
-# itt_prelim_draw          <- exp_data_c_t[ , lm(draw ~ treat)]
-# itt_prelim_opp_acc       <- exp_data_c_t[ , lm(opp_acc ~ treat)]
-# itt_prelim_opp_blunders  <- exp_data_c_t[ , lm(opp_blunders ~ treat)]
-# itt_prelim_opp_mistakes  <- exp_data_c_t[ , lm(opp_mistakes ~ treat)]
-# itt_prelim_opp_acpl      <- exp_data_c_t[ , lm(opp_acpl ~ treat)]
-# itt_prelim_opp_move_time <- exp_data_c_t[ , lm(opp_avg_move_time ~ treat)]
-# 
-# # add robust standard errors
-# 
-# itt_prelim_win_rse           <- coeftest(itt_prelim_win, vcov = vcovHC)
-# itt_prelim_maia_mate_rse     <- coeftest(itt_prelim_maia_mate, vcov = vcovHC)
-# itt_prelim_opp_mate_rse      <- coeftest(itt_prelim_opp_mate, vcov = vcovHC)
-# itt_prelim_opp_resign_rse    <- coeftest(itt_prelim_opp_resign, vcov = vcovHC)
-# itt_prelim_draw_rse          <- coeftest(itt_prelim_draw, vcov = vcovHC)
-# itt_prelim_opp_acc_rse       <- coeftest(itt_prelim_opp_acc, vcov = vcovHC)
-# itt_prelim_opp_blunders_rse  <- coeftest(itt_prelim_opp_blunders, vcov = vcovHC)
-# itt_prelim_opp_mistakes_rse  <- coeftest(itt_prelim_opp_mistakes, vcov = vcovHC)
-# itt_prelim_opp_acpl_rse      <- coeftest(itt_prelim_opp_acpl, vcov = vcovHC)
-# itt_prelim_opp_move_time_rse <- coeftest(itt_prelim_opp_move_time, vcov = vcovHC)
-# 
-# itt_prelim_models <- list(itt_prelim_win_rse,
-#                        itt_prelim_opp_resign_rse,
-#                        itt_prelim_opp_acc_rse,
-#                        itt_prelim_opp_blunders_rse,
-#                        itt_prelim_opp_mistakes_rse,
-#                        itt_prelim_opp_move_time_rse)
-
 ```
 
 ```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE, include=TRUE, font.size = "small"}
@@ -163,37 +129,6 @@ exp_data_main[chat_type %in% c("ChatGPT", "Control GPT") , ]
 
 # only include rows where respond != NA
 exp_data_main <- exp_data_main[complete.cases(exp_data_main$respond), ]
-
-# itt_main_win           <- exp_data_main[ , lm(maia_win ~ treat)]
-# itt_main_maia_mate     <- exp_data_main[ , lm(maia_checkmate ~ treat)]
-# itt_main_opp_mate      <- exp_data_main[ , lm(opp_checkmate ~ treat)]
-# itt_main_opp_resign    <- exp_data_main[ , lm(opp_resign ~ treat)]
-# itt_main_draw          <- exp_data_main[ , lm(draw ~ treat)]
-# itt_main_opp_acc       <- exp_data_main[ , lm(opp_acc ~ treat)]
-# itt_main_opp_blunders  <- exp_data_main[ , lm(opp_blunders ~ treat)]
-# itt_main_opp_mistakes  <- exp_data_main[ , lm(opp_mistakes ~ treat)]
-# itt_main_opp_acpl      <- exp_data_main[ , lm(opp_acpl ~ treat)]
-# itt_main_opp_move_time <- exp_data_main[ , lm(opp_avg_move_time ~ treat)]
-# 
-# # add robust standard errors
-# 
-# itt_main_win_rse           <- coeftest(itt_main_win, vcov = vcovHC)
-# itt_main_maia_mate_rse     <- coeftest(itt_main_maia_mate, vcov = vcovHC)
-# itt_main_opp_mate_rse      <- coeftest(itt_main_opp_mate, vcov = vcovHC)
-# itt_main_opp_resign_rse    <- coeftest(itt_main_opp_resign, vcov = vcovHC)
-# itt_main_draw_rse          <- coeftest(itt_main_draw, vcov = vcovHC)
-# itt_main_opp_acc_rse       <- coeftest(itt_main_opp_acc, vcov = vcovHC)
-# itt_main_opp_blunders_rse  <- coeftest(itt_main_opp_blunders, vcov = vcovHC)
-# itt_main_opp_mistakes_rse  <- coeftest(itt_main_opp_mistakes, vcov = vcovHC)
-# itt_main_opp_acpl_rse      <- coeftest(itt_main_opp_acpl, vcov = vcovHC)
-# itt_main_opp_move_time_rse <- coeftest(itt_main_opp_move_time, vcov = vcovHC)
-# 
-# itt_main_models <- list(itt_main_win_rse,
-#                         itt_main_opp_resign_rse,
-#                         itt_main_opp_acc_rse,
-#                         itt_main_opp_blunders_rse,
-#                         itt_main_opp_mistakes_rse,
-#                         itt_main_opp_move_time_rse)
 
 ```
 
@@ -267,98 +202,44 @@ get_cace <- function(data, treat_var, compliance_var, outcome_var) {
   cace_model
 }
 
-```
 
-```{r cace calc exp1}
-cace_prelim_win               <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
-cace_prelim_maia_mate         <- get_cace(exp_data_c_t, "treat", "respond", "maia_checkmate")
-cace_prelim_opp_mate          <- get_cace(exp_data_c_t, "treat", "respond", "opp_checkmate")
-cace_prelim_opp_resign        <- get_cace(exp_data_c_t, "treat", "respond", "opp_resign")
-cace_prelim_draw              <- get_cace(exp_data_c_t, "treat", "respond", "draw")
-cace_prelim_opp_acc           <- get_cace(exp_data_c_t, "treat", "respond", "opp_acc")
-cace_prelim_opp_blunders      <- get_cace(exp_data_c_t, "treat", "respond", "opp_blunders")
-cace_prelim_opp_mistakes      <- get_cace(exp_data_c_t, "treat", "respond", "opp_mistakes")
-cace_prelim_opp_acpl          <- get_cace(exp_data_c_t, "treat", "respond", "opp_acpl")
-cace_prelim_opp_move_time     <- get_cace(exp_data_c_t, "treat", "respond", "opp_avg_move_time")
+get_cace_stargazer <- function(d, table_name) {
+  
+  
+  maia_win    <- get_cace(exp_data_c_t, "treat", "respond", "maia_win")
+  #cace_prelim_maia_mate         <- get_cace(exp_data_c_t, "treat", "respond", "maia_checkmate")
+  #cace_prelim_opp_mate          <- get_cace(exp_data_c_t, "treat", "respond", "opp_checkmate")
+  opp_resign  <- get_cace(exp_data_c_t, "treat", "respond", "opp_resign")
+  #cace_prelim_draw              <- get_cace(exp_data_c_t, "treat", "respond", "draw")
+  opp_acc     <- get_cace(exp_data_c_t, "treat", "respond", "opp_acc")
+  blunders    <- get_cace(exp_data_c_t, "treat", "respond", "opp_blunders")
+  mistakes    <- get_cace(exp_data_c_t, "treat", "respond", "opp_mistakes")
+  #cace_prelim_opp_acpl          <- get_cace(exp_data_c_t, "treat", "respond", "opp_acpl")
+  move_time   <- get_cace(exp_data_c_t, "treat", "respond", "opp_avg_move_time")
+  
+  
+  stargazer(maia_win, 
+          opp_resign,
+          opp_acc,
+          blunders,
+          mistakes,
+          move_time,
+          title=table_name,
+          dep.var.labels.include = FALSE,
+          column.labels = measures,
+          covariate.labels = c('Treatment'),
+          type = 'latex',
+          header = FALSE,
+          omit.stat = c('f','rsq','ser')
+          )
+  
+}
 
-# add robust standard errors
-
-cace_prelim_win_rse           <- coeftest(cace_prelim_win, vcov = vcovHC)
-cace_prelim_maia_mate_rse     <- coeftest(cace_prelim_maia_mate, vcov = vcovHC)
-cace_prelim_opp_mate_rse      <- coeftest(cace_prelim_opp_mate, vcov = vcovHC)
-cace_prelim_opp_resign_rse    <- coeftest(cace_prelim_opp_resign, vcov = vcovHC)
-cace_prelim_draw_rse          <- coeftest(cace_prelim_draw, vcov = vcovHC)
-cace_prelim_opp_acc_rse       <- coeftest(cace_prelim_opp_acc, vcov = vcovHC)
-cace_prelim_opp_blunders_rse  <- coeftest(cace_prelim_opp_blunders, vcov = vcovHC)
-cace_prelim_opp_mistakes_rse  <- coeftest(cace_prelim_opp_mistakes, vcov = vcovHC)
-cace_prelim_opp_acpl_rse      <- coeftest(cace_prelim_opp_acpl, vcov = vcovHC)
-cace_prelim_opp_move_time_rse <- coeftest(cace_prelim_opp_move_time, vcov = vcovHC)
-
-cace_prelim_models <- list(cace_prelim_win_rse,
-                    cace_prelim_opp_resign_rse,
-                    cace_prelim_opp_acc_rse,
-                    cace_prelim_opp_blunders_rse,
-                    cace_prelim_opp_mistakes_rse,
-                    cace_prelim_opp_move_time_rse
-                    )
 ```
 
 ```{r, include=TRUE, results='asis', echo=FALSE, warning=FALSE}
-
-stargazer(cace_prelim_models,
-          dep.var.labels = 'Outcome Variables',
-          column.labels = measures,
-          covariate.labels = "Treatment",
-          type = 'latex',
-          header = FALSE)
-     
-```
-
-```{r cace calc exp2}
-# remove NAs
-
-cace_main_win               <- get_cace(exp_data_main, "treat", "respond", "maia_win")
-cace_main_maia_mate         <- get_cace(exp_data_main, "treat", "respond", "maia_checkmate")
-cace_main_opp_mate          <- get_cace(exp_data_main, "treat", "respond", "opp_checkmate")
-cace_main_opp_resign        <- get_cace(exp_data_main, "treat", "respond", "opp_resign")
-cace_main_draw              <- get_cace(exp_data_main, "treat", "respond", "draw")
-cace_main_opp_acc           <- get_cace(exp_data_main, "treat", "respond", "opp_acc")
-cace_main_opp_blunders      <- get_cace(exp_data_main, "treat", "respond", "opp_blunders")
-cace_main_opp_mistakes      <- get_cace(exp_data_main, "treat", "respond", "opp_mistakes")
-cace_main_opp_acpl          <- get_cace(exp_data_main, "treat", "respond", "opp_acpl")
-cace_main_opp_move_time     <- get_cace(exp_data_main, "treat", "respond", "opp_avg_move_time")
-
-# add robust standard errors
-
-cace_main_win_rse           <- coeftest(cace_main_win, vcov = vcovHC)
-cace_main_maia_mate_rse     <- coeftest(cace_main_maia_mate, vcov = vcovHC)
-cace_main_opp_mate_rse      <- coeftest(cace_main_opp_mate, vcov = vcovHC)
-cace_main_opp_resign_rse    <- coeftest(cace_main_opp_resign, vcov = vcovHC)
-cace_main_draw_rse          <- coeftest(cace_main_draw, vcov = vcovHC)
-cace_main_opp_acc_rse       <- coeftest(cace_main_opp_acc, vcov = vcovHC)
-cace_main_opp_blunders_rse  <- coeftest(cace_main_opp_blunders, vcov = vcovHC)
-cace_main_opp_mistakes_rse  <- coeftest(cace_main_opp_mistakes, vcov = vcovHC)
-cace_main_opp_acpl_rse      <- coeftest(cace_main_opp_acpl, vcov = vcovHC)
-cace_main_opp_move_time_rse <- coeftest(cace_main_opp_move_time, vcov = vcovHC)
-
-cace_main_models <- list(cace_main_win_rse,
-                    cace_main_opp_resign_rse,
-                    cace_main_opp_acc_rse,
-                    cace_main_opp_blunders_rse,
-                    cace_main_opp_mistakes_rse,
-                    cace_main_opp_move_time_rse
-                    )
-```
-
-```{r, include=TRUE, results='asis', echo=FALSE, warning=FALSE}
-
-stargazer(cace_main_models,
-          dep.var.labels = 'Outcome Variables',
-          column.labels = measures,
-          covariate.labels = "Treatment",
-          type = 'latex',
-          header = FALSE)
-     
+get_cace_stargazer(exp_data_c_t, 'cace prelim table')
+get_cace_stargazer(exp_data_main, 'cace main experiment')
 ```
 
 ## Benjamini-Hochberg (BH) Procedure
