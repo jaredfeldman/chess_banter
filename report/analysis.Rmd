@@ -174,7 +174,7 @@ stargazer(itt_main_models,
           covariate.labels = "Treatment")
 
 ```
-
+\newpage
 ## Labeling compliers and non-compliers
 
 In this experiment we defined a compiler as someone who sent a message in the chat room when we issued a dose of treatment. This allowed us to confirm that the opponent received the treatment.  We then defined a non-complier as an opponent who did not send a message.  We theorize that there may be multiple reasons why an opponent would not engage in chat with us.  1) Opponent has manually ‘muted’ chat and they do not see our messages.  2) Opponent does not speak english (our language used in treatment).  3) Opponent does not see the chat due to screen resolution or device used.  4) Opponent does not want to engage in chat.
@@ -336,7 +336,7 @@ stargazer(cace_main_models,
 ```
 
 ## Benjamini-Hochberg (BH) Procedure
-While some test results in the tables above show statistical significance at the 0.1 $p$ value threshold, we need to adjust due to the number of tests that we conducted. Since we performed ten statistical tests, we have an increased chance of finding a $p$ value less than or equal to 0.1 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control for the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis
+While some test results in the tables above show statistical significance at the 0.1 $p$ value threshold, we need to adjust due to the number of tests that we conducted. Since we performed ten statistical tests, we have an increased chance of finding a $p$ value less than or equal to 0.1 by chance, compared to running one or two tests. The Benjamini-Hochberg (BH) procedure is one way to try to control for the false discovery rate (FDR) between all of our tests. Unlike the False Positive Rate, which is used in the Bonferroni method, the FDR is the expected proportion of false positives among *all* positives which rejected the null hypothesis.
 
 In this method, we take the $p$ values from each of our $CACE$ outcomes and compare them to their associated $BH_{critical}$ value. The $BH_{critical}$ value is defined as:
 
