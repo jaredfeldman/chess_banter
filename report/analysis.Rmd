@@ -346,3 +346,8 @@ where $i$ is the rank of the $p$ value (i.e., the smallest value has $i=1$, etc.
 
 In both our Preliminary Experiment and Main Experiment, there were zero $p$ values less than their associated $BH_{critical}$ value, and thus we fail to reject the null hypothesis under both experiment conditions.
 
+
+## Summary of Results
+
+Given the results and analysis of our experimentation, we fail to reject the null hypothesis that online chess player’s performance is directly impacted when analyzing performance measures such as move accuracy, blunders, & mistakes, as well as game outcomes in regards to wins and losses. Notably, we did, expectedly, observe an effect on players who were treated to conversations with ChatGPT where those players' average move time increased by <5.8 seconds> which over the course of a 35+ move game could add up. However, this effect is not statistically significant with a p-value of (pvalue) and given the Benjamini-Hochberg (BH) Procedure, the significance is further diluted.
+
