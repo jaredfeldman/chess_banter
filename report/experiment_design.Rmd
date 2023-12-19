@@ -100,7 +100,7 @@ The chat bot has been prompted to keep responses short, to one sentence, and rel
 
 We used a conservative estimate of 5-15% effect size for our power analysis. In related work, it was found that trash talking had an indirect effect on competitive performance through creation of a perceived rivalry between the players \footnote{Yip et al., 2018}. Further, this research showed that there was an effect of b=.32, with a 95% confidence interval of 0.02, 0.87. In other words, this research found that trash talking resulted in the opponent performing better.
 
-In our analysis, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.\
+In our analysis, we determined that we would need roughly 150 samples of each treatment type to detect an effect size of 7.5%, and less samples for an effect size of 10%. Thus, we targeted 100–150 samples for both of our experiments.
   
- As seen in Figure 2, for both our Preliminary Experiment and Main Experiment, we were able to achieve our targeted sample size to have at least 80% power. 
+As seen in Figure 2, for both our Preliminary Experiment and Main Experiment, we were able to achieve our targeted sample size to have at least 80% power. 
   
